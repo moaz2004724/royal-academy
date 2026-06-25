@@ -1,0 +1,168 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  COACH
+  PARENT
+  PLAYER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(PARENT)
+  phone     String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  coachProfile  Coach?
+  parentProfile Parent?
+  playerProfile Player?
+}
+
+model Coach {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  specialty String?
+  exp       Int?
+  cert      String?
+  salary    Float?
+  groupId   String?  @unique
+  group     Group?   @relation("GroupCoach", fields: [groupId], references: [id])
+  
+  attendance Attendance[]
+  evaluations Evaluation[]
+  trainings   Training[]
+  perms       Json?    // { "attendance": true, "payments": false, ... }
+}
+
+model Parent {
+  id      String   @id @default(cuid())
+  userId  String   @unique
+  user    User     @relation(fields: [userId], references: [id])
+  players Player[]
+}
+
+model Player {
+  id            String   @id @default(cuid())
+  userId        String?  @unique
+  user          User?    @relation(fields: [userId], references: [id])
+  name          String
+  age           Int
+  phone         String?
+  status        String   @default("نشط")
+  position      String?
+  weight        Float?
+  height        Float?
+  joinDate      DateTime @default(now())
+  
+  // Stats
+  score         Int      @default(80)
+  speed         Int      @default(75)
+  stamina       Int      @default(75)
+  technique     Int      @default(75)
+  teamwork      Int      @default(75)
+  goals         Int      @default(0)
+  assists       Int      @default(0)
+  attendancePct Int      @default(90)
+
+  groupId       String
+  group         Group    @relation(fields: [groupId], references: [id])
+  parentId      String
+  parent        Parent   @relation(fields: [parentId], references: [id])
+  
+  payments      Payment[]
+  evaluations   Evaluation[]
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   @default("#06B6D4")
+  coachId   String?  @unique
+  coach     Coach?   @relation("GroupCoach")
+  players   Player[]
+  trainings Training[]
+  attendance Attendance[]
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  playerId   String
+  player     Player   @relation(fields: [playerId], references: [id])
+  playerName String?
+  coachId    String?
+  coachName  String?
+  type       String
+  month      String
+  amount     Float
+  date       DateTime @default(now())
+  note       String?
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  date      DateTime
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id])
+  coachId   String?
+  coach     Coach?   @relation(fields: [coachId], references: [id])
+  records   Json     // { "playerId": "حاضر", ... }
+}
+
+model Evaluation {
+  id        String   @id @default(cuid())
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id])
+  coachId   String
+  coach     Coach    @relation(fields: [coachId], references: [id])
+  date      DateTime @default(now())
+  note      String?
+  speed     Int
+  technique Int
+  teamwork  Int
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  from       String
+  to         String
+  fromName   String
+  toName     String
+  text       String
+  files      Json?
+  date       DateTime @default(now())
+  read       Boolean  @default(false)
+}
+
+model Training {
+  id            String   @id @default(cuid())
+  groupId       String
+  group         Group    @relation(fields: [groupId], references: [id])
+  coachId       String
+  coach         Coach    @relation(fields: [coachId], references: [id])
+  days          String[] // ["الأحد", "الأربعاء"]
+  time          String
+  duration      Int
+  field         String
+  title         String?
+  trainingFocus String?
+  note          String?
+  date          DateTime?
+  isRecurring   Boolean  @default(true)
+  type          String   @default("training") // "training" or "match"
+  isFriendly    Boolean  @default(false)
+}
