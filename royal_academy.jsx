@@ -310,7 +310,7 @@ const RoyalLogo = ({ size = 48, variant = "main" }) => {
   return (
     <img 
       src={src} 
-      alt="أكاديمية رويال" 
+      alt="أكاديمية رويالز" 
       style={{ 
         width: size, 
         height: size, 
@@ -827,19 +827,19 @@ const INIT_GROUPS = [
   { id: "g3", name: "تحت 15", coachId: "c3", color: "#F59E0B" },
 ];
 const INIT_COACHES = [
-  { id: "c1", name: "أحمد سالم البقمي",   phone: "0501110001", email: "ahmed@royal.sa",  password: "Coach@1234", specialty: "مهارات فردية", exp: 8,  cert: "UEFA B", groupId: "g1", joined: "2021-01-15", salary: 4500, perms: { ...DEFAULT_PERMS } },
-  { id: "c2", name: "خالد مبارك العسيري", phone: "0502220002", email: "khaled@royal.sa", password: "Coach@5678", specialty: "تكتيك وخطط",  exp: 12, cert: "AFC Pro",groupId: "g2", joined: "2019-06-01", salary: 5500, perms: { ...DEFAULT_PERMS } },
-  { id: "c3", name: "سعد الرشيدي",        phone: "0503330003", email: "saad@royal.sa",   password: "Coach@9012", specialty: "لياقة بدنية", exp: 6,  cert: "UEFA C", groupId: "g3", joined: "2022-03-10", salary: 4000, perms: { ...DEFAULT_PERMS } },
+  { id: "c1", name: "أحمد سالم البقمي",   phone: "0501110001", email: "ahmed@royals.sa",  password: "Coach@1234", specialty: "مهارات فردية", exp: 8,  cert: "UEFA B", groupId: "g1", joined: "2021-01-15", salary: 4500, perms: { ...DEFAULT_PERMS } },
+  { id: "c2", name: "خالد مبارك العسيري", phone: "0502220002", email: "khaled@royals.sa", password: "Coach@5678", specialty: "تكتيك وخطط",  exp: 12, cert: "AFC Pro",groupId: "g2", joined: "2019-06-01", salary: 5500, perms: { ...DEFAULT_PERMS } },
+  { id: "c3", name: "سعد الرشيدي",        phone: "0503330003", email: "saad@royals.sa",   password: "Coach@9012", specialty: "لياقة بدنية", exp: 6,  cert: "UEFA C", groupId: "g3", joined: "2022-03-10", salary: 4000, perms: { ...DEFAULT_PERMS } },
 ];
 const INIT_PLAYERS = [
-  { id:"p1", name:"محمد عبدالله الغامدي",   age:12, groupId:"g2", phone:"0501234567", status:"نشط",   score:85, speed:78, stamina:82, technique:90, teamwork:88, goals:12, assists:7,  attendancePct:92, weight:48, height:158, position:"مهاجم",    parentId:"par1", joinDate:"2024-09-01", email:"p1@royal.sa",  password:"Player@001" },
-  { id:"p2", name:"فيصل سعد القحطاني",      age:10, groupId:"g1", phone:"0507654321", status:"نشط",   score:90, speed:88, stamina:85, technique:92, teamwork:91, goals:18, assists:11, attendancePct:96, weight:38, height:142, position:"جناح أيمن",parentId:"par2", joinDate:"2024-08-15", email:"p2@royal.sa",  password:"Player@002" },
-  { id:"p3", name:"عمر خالد الزهراني",      age:14, groupId:"g3", phone:"0509876543", status:"نشط",   score:78, speed:80, stamina:75, technique:76, teamwork:80, goals:8,  assists:14, attendancePct:85, weight:58, height:170, position:"وسط",       parentId:"par3", joinDate:"2024-10-01", email:"p3@royal.sa",  password:"Player@003" },
-  { id:"p4", name:"يوسف أحمد الشهري",      age:11, groupId:"g2", phone:"0501112233", status:"موقوف", score:65, speed:62, stamina:60, technique:68, teamwork:65, goals:3,  assists:2,  attendancePct:60, weight:42, height:150, position:"مدافع",     parentId:"par4", joinDate:"2024-07-20", email:"p4@royal.sa",  password:"Player@004" },
-  { id:"p5", name:"بندر علي الدوسري",      age:13, groupId:"g3", phone:"0504445566", status:"نشط",   score:92, speed:94, stamina:90, technique:91, teamwork:93, goals:22, assists:9,  attendancePct:98, weight:54, height:165, position:"جناح أيسر",parentId:"par5", joinDate:"2024-09-10", email:"p5@royal.sa",  password:"Player@005" },
-  { id:"p6", name:"سلطان محمد العتيبي",    age:9,  groupId:"g1", phone:"0506667788", status:"نشط",   score:88, speed:85, stamina:87, technique:89, teamwork:86, goals:15, assists:8,  attendancePct:94, weight:32, height:135, position:"مهاجم",    parentId:"par1", joinDate:"2024-11-01", email:"p6@royal.sa",  password:"Player@006" },
-  { id:"p7", name:"نايف عبدالرحمن الحربي", age:12, groupId:"g2", phone:"0508889900", status:"نشط",   score:81, speed:79, stamina:83, technique:80, teamwork:84, goals:9,  assists:12, attendancePct:89, weight:46, height:155, position:"وسط",       parentId:"par6", joinDate:"2024-09-05", email:"p7@royal.sa",  password:"Player@007" },
-  { id:"p8", name:"ريان فهد السبيعي",      age:10, groupId:"g1", phone:"0502223344", status:"نشط",   score:74, speed:72, stamina:70, technique:76, teamwork:77, goals:6,  assists:5,  attendancePct:80, weight:36, height:140, position:"مدافع",     parentId:"par7", joinDate:"2024-10-20", email:"p8@royal.sa",  password:"Player@008" },
+  { id:"p1", name:"محمد عبدالله الغامدي",   age:12, groupId:"g2", phone:"0501234567", status:"نشط",   score:85, speed:78, stamina:82, technique:90, teamwork:88, goals:12, assists:7,  attendancePct:92, weight:48, height:158, position:"مهاجم",    parentId:"par1", joinDate:"2024-09-01", email:"p1@royals.sa",  password:"Player@001" },
+  { id:"p2", name:"فيصل سعد القحطاني",      age:10, groupId:"g1", phone:"0507654321", status:"نشط",   score:90, speed:88, stamina:85, technique:92, teamwork:91, goals:18, assists:11, attendancePct:96, weight:38, height:142, position:"جناح أيمن",parentId:"par2", joinDate:"2024-08-15", email:"p2@royals.sa",  password:"Player@002" },
+  { id:"p3", name:"عمر خالد الزهراني",      age:14, groupId:"g3", phone:"0509876543", status:"نشط",   score:78, speed:80, stamina:75, technique:76, teamwork:80, goals:8,  assists:14, attendancePct:85, weight:58, height:170, position:"وسط",       parentId:"par3", joinDate:"2024-10-01", email:"p3@royals.sa",  password:"Player@003" },
+  { id:"p4", name:"يوسف أحمد الشهري",      age:11, groupId:"g2", phone:"0501112233", status:"موقوف", score:65, speed:62, stamina:60, technique:68, teamwork:65, goals:3,  assists:2,  attendancePct:60, weight:42, height:150, position:"مدافع",     parentId:"par4", joinDate:"2024-07-20", email:"p4@royals.sa",  password:"Player@004" },
+  { id:"p5", name:"بندر علي الدوسري",      age:13, groupId:"g3", phone:"0504445566", status:"نشط",   score:92, speed:94, stamina:90, technique:91, teamwork:93, goals:22, assists:9,  attendancePct:98, weight:54, height:165, position:"جناح أيسر",parentId:"par5", joinDate:"2024-09-10", email:"p5@royals.sa",  password:"Player@005" },
+  { id:"p6", name:"سلطان محمد العتيبي",    age:9,  groupId:"g1", phone:"0506667788", status:"نشط",   score:88, speed:85, stamina:87, technique:89, teamwork:86, goals:15, assists:8,  attendancePct:94, weight:32, height:135, position:"مهاجم",    parentId:"par1", joinDate:"2024-11-01", email:"p6@royals.sa",  password:"Player@006" },
+  { id:"p7", name:"نايف عبدالرحمن الحربي", age:12, groupId:"g2", phone:"0508889900", status:"نشط",   score:81, speed:79, stamina:83, technique:80, teamwork:84, goals:9,  assists:12, attendancePct:89, weight:46, height:155, position:"وسط",       parentId:"par6", joinDate:"2024-09-05", email:"p7@royals.sa",  password:"Player@007" },
+  { id:"p8", name:"ريان فهد السبيعي",      age:10, groupId:"g1", phone:"0502223344", status:"نشط",   score:74, speed:72, stamina:70, technique:76, teamwork:77, goals:6,  assists:5,  attendancePct:80, weight:36, height:140, position:"مدافع",     parentId:"par7", joinDate:"2024-10-20", email:"p8@royals.sa",  password:"Player@008" },
 ];
 const INIT_PARENTS = [
   { id:"par1", name:"عبدالله الغامدي",  phone:"0551234567", email:"aalghamdi@mail.com", playerIds:["p1","p6"], password:"Parent@111" },
@@ -905,10 +905,10 @@ const POS_DATA = [
   { name:"حارس",  value:1, color:"#F59E0B" },
 ];
 const USERS = [
-  { id:"admin", email:"admin@royal.sa",      password:"Royal@2026",  role:"admin",  name:"مدير النادي"          },
-  { id:"c1",    email:"ahmed@royal.sa",      password:"Coach@1234", role:"coach",  name:"أحمد سالم البقمي"    },
-  { id:"c2",    email:"khaled@royal.sa",     password:"Coach@5678", role:"coach",  name:"خالد مبارك العسيري"  },
-  { id:"c3",    email:"saad@royal.sa",       password:"Coach@9012", role:"coach",  name:"سعد الرشيدي"          },
+  { id:"admin", email:"admin@royals.sa",      password:"Royals@2026",  role:"admin",  name:"مدير النادي"          },
+  { id:"c1",    email:"ahmed@royals.sa",      password:"Coach@1234", role:"coach",  name:"أحمد سالم البقمي"    },
+  { id:"c2",    email:"khaled@royals.sa",     password:"Coach@5678", role:"coach",  name:"خالد مبارك العسيري"  },
+  { id:"c3",    email:"saad@royals.sa",       password:"Coach@9012", role:"coach",  name:"سعد الرشيدي"          },
   { id:"par1",  email:"aalghamdi@mail.com", password:"Parent@111", role:"parent", name:"عبدالله الغامدي"      },
   { id:"par2",  email:"saqahtani@mail.com", password:"Parent@222", role:"parent", name:"سعد القحطاني"          },
   { id:"par3",  email:"kzahrani@mail.com",  password:"Parent@333", role:"parent", name:"خالد الزهراني"         },
@@ -1160,7 +1160,7 @@ function LoginPage({ onLogin, players = [], coaches = [], t }) {
               <RoyalLogo size={110} variant="white" />
             </div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fff", marginBottom: 12, letterSpacing: "-.02em" }}>
-              أكاديمية <span style={{ color: "#FF7C00" }}>رويال</span> الرياضية
+              أكاديمية <span style={{ color: "#FF7C00" }}>رويالز</span> الرياضية
             </h1>
             <p style={{ fontSize: 14, color: "#94A3B8", fontWeight: 600, maxWidth: 360, lineHeight: 1.6, marginBottom: 0 }}>
               أكاديمية كرة القدم الأولى لتطوير المواهب الناشئة وإدارتها بنظام إلكتروني متكامل
@@ -1186,7 +1186,7 @@ function LoginPage({ onLogin, players = [], coaches = [], t }) {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#2563EB" strokeWidth="2"/><polyline points="22,6 12,13 2,6" stroke="#2563EB" strokeWidth="2"/></svg>
                 البريد الإلكتروني
               </label>
-              <input id="login-email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="name@royal.sa"
+              <input id="login-email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="name@royals.sa"
                 onFocus={e => { e.target.style.borderColor = "#2563EB"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,.15)"; }} 
                 onBlur={e => { e.target.style.borderColor = "#1E293B"; e.target.style.boxShadow = "none"; }}
                 style={{ width: "100%", background: "rgba(15,23,42,.4)", border: "1.5px solid #1E293B", borderRadius: 12, padding: "14px 18px", color: "#F8FAFC", fontSize: 14, outline: "none", transition: "all .25s" }} />
@@ -1252,7 +1252,7 @@ function LoginPage({ onLogin, players = [], coaches = [], t }) {
             <RoyalLogo size={90} variant="white" />
           </div>
           <h1 style={{ fontSize: 34, fontWeight: 900, color: "#fff", marginBottom: 8 }}>
-            أكاديمية <span style={{ color: "#FF7C00" }}>رويال</span> الرياضية
+            أكاديمية <span style={{ color: "#FF7C00" }}>رويالز</span> الرياضية
           </h1>
           <p style={{ fontSize: 13, color: "#94A3B8", fontWeight: 600 }}>أكاديمية كرة القدم — نظام الإدارة المتكامل</p>
         </div>
@@ -1375,25 +1375,25 @@ function Shell({ title, subtitle, color, icon, tabs, activeTab, setActiveTab, on
 /* ═══ ROOT APP ════════════════════════════════════════ */
 export default function App() {
   const [user, setUser]         = useState(() => {
-    const saved = localStorage.getItem('royal_logged_user');
+    const saved = localStorage.getItem('royals_logged_user');
     return saved ? JSON.parse(saved) : null;
   });
-  const [attendance, setAttendance] = useState(() => JSON.parse(localStorage.getItem('royal_attendance') || '[]'));
-  const [evals, setEvals] = useState(() => JSON.parse(localStorage.getItem('royal_evals') || '[]'));
-  const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem('royal_messages') || '[]'));
-  const [prices, setPrices] = useState(() => JSON.parse(localStorage.getItem('royal_prices') || JSON.stringify(PRICE_LIST)));
-  const [trainings, setTrainings] = useState(() => JSON.parse(localStorage.getItem('royal_trainings') || '[]'));
-  const [coachesAttendance, setCoachesAttendance] = useState(() => JSON.parse(localStorage.getItem('royal_coachesAttendance') || '[]'));
+  const [attendance, setAttendance] = useState(() => JSON.parse(localStorage.getItem('royals_attendance') || '[]'));
+  const [evals, setEvals] = useState(() => JSON.parse(localStorage.getItem('royals_evals') || '[]'));
+  const [messages, setMessages] = useState(() => JSON.parse(localStorage.getItem('royals_messages') || '[]'));
+  const [prices, setPrices] = useState(() => JSON.parse(localStorage.getItem('royals_prices') || JSON.stringify(PRICE_LIST)));
+  const [trainings, setTrainings] = useState(() => JSON.parse(localStorage.getItem('royals_trainings') || '[]'));
+  const [coachesAttendance, setCoachesAttendance] = useState(() => JSON.parse(localStorage.getItem('royals_coachesAttendance') || '[]'));
 
-  const [groups, setGroups] = useState(() => JSON.parse(localStorage.getItem('royal_groups') || '[]'));
-  const [coaches, setCoaches] = useState(() => JSON.parse(localStorage.getItem('royal_coaches') || '[]'));
-  const [players, setPlayers] = useState(() => JSON.parse(localStorage.getItem('royal_players') || '[]'));
-  const [parents, setParents] = useState(() => JSON.parse(localStorage.getItem('royal_parents') || '[]'));
-  const [payments, setPayments] = useState(() => JSON.parse(localStorage.getItem('royal_payments') || '[]'));
-  const [theme, setTheme] = useState(() => localStorage.getItem('royal_theme') || "dark");
+  const [groups, setGroups] = useState(() => JSON.parse(localStorage.getItem('royals_groups') || '[]'));
+  const [coaches, setCoaches] = useState(() => JSON.parse(localStorage.getItem('royals_coaches') || '[]'));
+  const [players, setPlayers] = useState(() => JSON.parse(localStorage.getItem('royals_players') || '[]'));
+  const [parents, setParents] = useState(() => JSON.parse(localStorage.getItem('royals_parents') || '[]'));
+  const [payments, setPayments] = useState(() => JSON.parse(localStorage.getItem('royals_payments') || '[]'));
+  const [theme, setTheme] = useState(() => localStorage.getItem('royals_theme') || "dark");
 
   const [syncStatus, setSyncStatus] = useState("synced"); // 'synced', 'syncing', 'error'
-  const [lastUpdate, setLastUpdateState] = useState(() => parseInt(localStorage.getItem('royal_last_update') || '0'));
+  const [lastUpdate, setLastUpdateState] = useState(() => parseInt(localStorage.getItem('royals_last_update') || '0'));
   const lastLocalWriteRef = useRef(0);
   const pendingSyncsRef = useRef(0);
   const markLocalWrite = () => {
@@ -1403,7 +1403,7 @@ export default function App() {
   const setLastUpdate = (val) => {
     const time = val !== undefined ? val : Date.now();
     setLastUpdateState(time);
-    localStorage.setItem('royal_last_update', String(time));
+    localStorage.setItem('royals_last_update', String(time));
   };
 
   const syncWithAPI = async (table, item, isDeleted = false) => {
@@ -1454,8 +1454,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (user) localStorage.setItem('royal_logged_user', JSON.stringify(user));
-    else localStorage.removeItem('royal_logged_user');
+    if (user) localStorage.setItem('royals_logged_user', JSON.stringify(user));
+    else localStorage.removeItem('royals_logged_user');
   }, [user]);
 
   // Fetch from API if configured (with automatic background polling every 6s)
@@ -1482,8 +1482,8 @@ export default function App() {
             const phone = p.phone || "0500000000";
             return { 
               ...p, 
-              email: p.email || `royal_${phone}@royal.sa`,
-              password: p.password || `royal_${phone.slice(-4)}`
+              email: p.email || `royals_${phone}@royals.sa`,
+              password: p.password || `royals_${phone.slice(-4)}`
             };
           });
           setPlayers(repaired);
@@ -1509,18 +1509,18 @@ export default function App() {
   }, [user, syncStatus]);
 
   useEffect(() => {
-    localStorage.setItem('royal_players', JSON.stringify(players));
-    localStorage.setItem('royal_coaches', JSON.stringify(coaches));
-    localStorage.setItem('royal_groups', JSON.stringify(groups));
-    localStorage.setItem('royal_parents', JSON.stringify(parents));
-    localStorage.setItem('royal_payments', JSON.stringify(payments));
-    localStorage.setItem('royal_attendance', JSON.stringify(attendance));
-    localStorage.setItem('royal_coachesAttendance', JSON.stringify(coachesAttendance));
-    localStorage.setItem('royal_evals', JSON.stringify(evals));
-    localStorage.setItem('royal_messages', JSON.stringify(messages));
-    localStorage.setItem('royal_prices', JSON.stringify(prices));
-    localStorage.setItem('royal_trainings', JSON.stringify(trainings));
-    localStorage.setItem('royal_theme', theme);
+    localStorage.setItem('royals_players', JSON.stringify(players));
+    localStorage.setItem('royals_coaches', JSON.stringify(coaches));
+    localStorage.setItem('royals_groups', JSON.stringify(groups));
+    localStorage.setItem('royals_parents', JSON.stringify(parents));
+    localStorage.setItem('royals_payments', JSON.stringify(payments));
+    localStorage.setItem('royals_attendance', JSON.stringify(attendance));
+    localStorage.setItem('royals_coachesAttendance', JSON.stringify(coachesAttendance));
+    localStorage.setItem('royals_evals', JSON.stringify(evals));
+    localStorage.setItem('royals_messages', JSON.stringify(messages));
+    localStorage.setItem('royals_prices', JSON.stringify(prices));
+    localStorage.setItem('royals_trainings', JSON.stringify(trainings));
+    localStorage.setItem('royals_theme', theme);
   }, [players, coaches, groups, parents, payments, attendance, coachesAttendance, evals, messages, prices, trainings, theme]);
 
   const t = THEMES[theme];
@@ -1741,7 +1741,7 @@ export default function App() {
     t,
     forceRefresh: () => {
       setLastUpdate(0); // Clear lock
-      localStorage.setItem('royal_last_update', '0');
+      localStorage.setItem('royals_last_update', '0');
       window.location.reload(); 
     }
   };
@@ -1804,7 +1804,7 @@ function AdminPortal({ user, onLogout, groups, setGroups, coaches, setCoaches, p
     { id: "messages",     icon: "messages",     label: "الرسائل",      badge: messages.filter(m => m.to === "admin" && !m.read).length || undefined },
   ];
   return (
-    <Shell title="لوحة الإدارة" subtitle="أكاديمية رويال الرياضية" color="#2563EB" icon="dashboard" tabs={tabs} activeTab={tab} setActiveTab={setTab} onLogout={onLogout} badge="مدير عام" user={user} t={t} syncStatus={syncStatus}>
+    <Shell title="لوحة الإدارة" subtitle="أكاديمية رويالز الرياضية" color="#2563EB" icon="dashboard" tabs={tabs} activeTab={tab} setActiveTab={setTab} onLogout={onLogout} badge="مدير عام" user={user} t={t} syncStatus={syncStatus}>
       {tab === "overview"  && <AdminOverview players={players} coaches={coaches} groups={groups} payments={payments} attendance={attendance} t={t} />}
       {tab === "teams"     && <AdminTeams groups={groups} setGroups={setGroups} coaches={coaches} players={players} t={t} />}
       {tab === "attendance" && <AdminAttendance groups={groups} players={players} coaches={coaches} attendance={attendance} setAttendance={setAttendance} coachesAttendance={coachesAttendance} setCoachesAttendance={setCoachesAttendance} t={t} payments={payments} trainings={trainings} />}
@@ -1943,7 +1943,7 @@ function AdminOverview({ players, coaches, groups, payments, attendance = [], t 
   // WhatsApp Reminder copy function
   const copyReminder = (playerName) => {
     const monthName = CUR_MONTH.split(" ")[0];
-    const msg = `السلام عليكم ورحمة الله وبركاته، نود تذكيركم بلطف بموعد سداد اشتراك شهر ${monthName} للاعب البطل (${playerName}) في أكاديمية رويال الرياضية. شاكرين ومقدرين حسن تعاونكم معنا.\n— إدارة أكاديمية رويال الرياضية.`;
+    const msg = `السلام عليكم ورحمة الله وبركاته، نود تذكيركم بلطف بموعد سداد اشتراك شهر ${monthName} للاعب البطل (${playerName}) في أكاديمية رويالز الرياضية. شاكرين ومقدرين حسن تعاونكم معنا.\n— إدارة أكاديمية رويالز الرياضية.`;
     navigator.clipboard.writeText(msg).then(() => {
       setToastMsg(`تم نسخ رسالة التذكير للاعب ${playerName} بنجاح!`);
       setTimeout(() => setToastMsg(null), 3000);
@@ -2115,7 +2115,7 @@ function AdminOverview({ players, coaches, groups, payments, attendance = [], t 
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 10% 80%, rgba(37,99,235,.05) 0%, transparent 50%)", pointerEvents: "none" }} />
           
           <div style={{ position: "relative", zIndex: 1, maxWidth: "70%" }}>
-            <h2 style={{ fontSize: 20, fontWeight: 900, color: t.name === "dark" ? "#FFF" : "#0F172A", marginBottom: 6 }}>لوحة التحكم الإدارية — أكاديمية رويال الرياضية</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 900, color: t.name === "dark" ? "#FFF" : "#0F172A", marginBottom: 6 }}>لوحة التحكم الإدارية — أكاديمية رويالز الرياضية</h2>
             <p style={{ fontSize: 12, color: t.textMid, lineHeight: 1.6, margin: 0 }}>مرحباً بك مجدداً. يمكنك متابعة كافة البيانات والعمليات المالية والرياضية للأكاديمية والاطلاع على المخططات التحليلية المحدثة مباشرة.</p>
           </div>
 
@@ -2543,8 +2543,8 @@ function AdminCoaches({ coaches, setCoaches, groups, players, payments, t }) {
     if (!form.name.trim()) return;
     if (modal === "add") {
       const id = `c${Date.now()}`;
-      const email = `${form.name.split(" ")[0].toLowerCase()}${Math.floor(Math.random()*1000)}@royal.sa`;
-      const password = `Royal@${Math.floor(Math.random()*9000)+1000}`;
+      const email = `${form.name.split(" ")[0].toLowerCase()}${Math.floor(Math.random()*1000)}@royals.sa`;
+      const password = `Royals@${Math.floor(Math.random()*9000)+1000}`;
       setCoaches(c => [...c, { ...form, id, email, password, joined: getLocalDateString(new Date()) }]);
     }
     else setCoaches(c => c.map(x => x.id === form.id ? form : x));
@@ -2768,7 +2768,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
               ["تاريخ التسجيل", formatArabicDate(p.joinDate)],
               ["تجديد الاشتراك", latestRenewalDate],
               ["إيميل الدخول", par?.email || p.email || "—"],
-              ["كلمة المرور", par?.password || p.password || (p.phone ? `royal_${p.phone.slice(-4)}` : "كلمة مرور ولي الأمر الحالية")]
+              ["كلمة المرور", par?.password || p.password || (p.phone ? `royals_${p.phone.slice(-4)}` : "كلمة مرور ولي الأمر الحالية")]
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid ${t.border}`, fontSize: 12 }}>
                 <span style={{ color: t.textDim }}>{k}</span>
@@ -3034,8 +3034,8 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
               const resolvedParentId = (form.parentId && form.parentId !== "__new__")
                 ? form.parentId
                 : `par_${phone}`;
-              const generatedEmail = `royal_${phone}@royal.sa`;
-              const generatedPass  = `royal_${phone.slice(-4)}`;
+              const generatedEmail = `royals_${phone}@royals.sa`;
+              const generatedPass  = `royals_${phone.slice(-4)}`;
               setPlayers(ps => [...ps, { 
                 ...form, 
                 id: `p${Date.now()}`, 
@@ -3106,9 +3106,9 @@ function InvoiceModal({ payment, allPayments, players, parents, onClose }) {
 
     const shareScript = mode === 'share' ? `
       async function doShare() {
-        const title = 'فاتورة مشترك — أكاديمية رويال الرياضية';
+        const title = 'فاتورة مشترك — أكاديمية رويالز الرياضية';
         const text = [
-          'فاتورة مشترك — أكاديمية رويال الرياضية',
+          'فاتورة مشترك — أكاديمية رويالز الرياضية',
           'اللاعب: ${payment.playerName}',
           'الشهر: ${payment.month}',
           'المجموع: ${fmtMoney(totalAmount)}',
@@ -3246,8 +3246,8 @@ function InvoiceModal({ payment, allPayments, players, parents, onClose }) {
             </div>
             {/* Academy name + single logo */}
             <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-              <img src={logoMain} alt="أكاديمية رويال" style={{ width: 70, height: 70, objectFit: 'contain' }}/>
-              <div style={{ fontSize: 22, fontWeight: 900, color: '#1a1a2e', letterSpacing: '-0.3px', lineHeight: 1.2 }}>أكاديمية رويال الرياضية</div>
+              <img src={logoMain} alt="أكاديمية رويالز" style={{ width: 70, height: 70, objectFit: 'contain' }}/>
+              <div style={{ fontSize: 22, fontWeight: 900, color: '#1a1a2e', letterSpacing: '-0.3px', lineHeight: 1.2 }}>أكاديمية رويالز الرياضية</div>
               <div style={{ fontSize: 12, color: '#777' }}>أكاديمية كرة القدم</div>
             </div>
             {/* Empty spacer to keep layout balanced */}
@@ -3389,7 +3389,7 @@ function InvoiceModal({ payment, allPayments, players, parents, onClose }) {
           {/* ── Footer ── */}
           <div style={{ borderTop: '1px solid #eee', padding: '12px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ fontSize: 10, color: '#bbb' }}>تم إنشاء هذه الفاتورة إلكترونياً</div>
-            <div style={{ fontSize: 10, color: '#888', fontWeight: 600 }}>أكاديمية رويال الرياضية · أكاديمية كرة القدم</div>
+            <div style={{ fontSize: 10, color: '#888', fontWeight: 600 }}>أكاديمية رويالز الرياضية · أكاديمية كرة القدم</div>
             <img src={logoIcon} alt="" style={{ width: 28, height: 28, objectFit: 'contain', opacity: 0.4 }}/>
           </div>
         </div>
@@ -3579,23 +3579,23 @@ function AdminPrices({ prices, setPrices, t }) {
       const res = await fetch(`${API_URL}/api/reset-database`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ secret: "RoyalLaunch2026" })
+        body: JSON.stringify({ secret: "RoyalsLaunch2026" })
       });
       
       const data = await res.json();
       if (res.ok && data.success) {
         alert("تم إعادة تهيئة النظام وتصفير البيانات بنجاح!");
         // Clear all cached local data keys to prevent dirty sync
-        localStorage.removeItem('royal_players');
-        localStorage.removeItem('royal_coaches');
-        localStorage.removeItem('royal_groups');
-        localStorage.removeItem('royal_parents');
-        localStorage.removeItem('royal_payments');
-        localStorage.removeItem('royal_attendance');
-        localStorage.removeItem('royal_coachesAttendance');
-        localStorage.removeItem('royal_evals');
-        localStorage.removeItem('royal_messages');
-        localStorage.removeItem('royal_trainings');
+        localStorage.removeItem('royals_players');
+        localStorage.removeItem('royals_coaches');
+        localStorage.removeItem('royals_groups');
+        localStorage.removeItem('royals_parents');
+        localStorage.removeItem('royals_payments');
+        localStorage.removeItem('royals_attendance');
+        localStorage.removeItem('royals_coachesAttendance');
+        localStorage.removeItem('royals_evals');
+        localStorage.removeItem('royals_messages');
+        localStorage.removeItem('royals_trainings');
         
         // Reload to fetch clean database state
         window.location.reload();
@@ -3957,7 +3957,7 @@ function AdminReports({ players, coaches, groups, payments, attendance, evals, t
         wsRevenue["!cols"] = [{ wch: 20 }, { wch: 14 }, { wch: 18 }];
         XLSX.utils.book_append_sheet(wb, wsRevenue, "الإيرادات حسب النوع");
 
-        const fileName = `تقرير_أكاديمية_رويال_${periodLabel.replace(/ /g, "_")}.xlsx`;
+        const fileName = `تقرير_أكاديمية_رويالز_${periodLabel.replace(/ /g, "_")}.xlsx`;
         XLSX.writeFile(wb, fileName);
         setLastExport({ time: new Date().toLocaleTimeString("ar-SA"), period: periodLabel, fileName });
       } catch (e) {
@@ -5813,7 +5813,7 @@ function ParentSchedule({ childGroup, childCoach, trainings, t }) {
    MESSAGING (shared)
 ══════════════════════════════════════════════════════════ */
 const QUICK_TEMPLATES = [
-  { label: "ترحيب", text: "أهلاً بك في أكاديمية رويال الرياضية. يسعدنا انضمامكم إلينا." },
+  { label: "ترحيب", text: "أهلاً بك في أكاديمية رويالز الرياضية. يسعدنا انضمامكم إلينا." },
   { label: "تذكير سداد", text: "نحيطكم علماً بضرورة سداد الرسوم الشهرية لضمان استمرارية التدريب." },
   { label: "تأجيل تدريب", text: "نعتذر عن إلغاء تدريب اليوم لظروف طارئة، وسيتم التعويض في وقت لاحق." },
   { label: "تقييم جديد", text: "تم تحديث التقييم الفني للاعب، يرجى الاطلاع عليه من لوحة التحكم." },
@@ -5833,7 +5833,7 @@ function Messaging({ messages, setMessages, meId, meName, coaches, parents, t, r
   const templates = (() => {
     if (role === "admin") {
       return [
-        { label: "ترحيب باللاعبين", text: "أهلاً بك في أكاديمية رويال الرياضية. يسعدنا انضمامكم إلينا متمنين لكم رحلة تدريبية متميزة." },
+        { label: "ترحيب باللاعبين", text: "أهلاً بك في أكاديمية رويالز الرياضية. يسعدنا انضمامكم إلينا متمنين لكم رحلة تدريبية متميزة." },
         { label: "تذكير سداد الرسوم", text: "نحيطكم علماً بضرورة سداد الرسوم الشهرية المستحقة لضمان استمرارية التدريب." },
         { label: "إشعار إداري", text: "نود تذكيركم بضرورة الالتزام بالقواعد والزي الرسمي للأكاديمية خلال الحصص التدريبية." },
         { label: "عطلة رسمية", text: "نحيطكم علماً بأنه سيتم إيقاف التدريبات مؤقتاً خلال فترة الإجازة الرسمية المعلنة." }
