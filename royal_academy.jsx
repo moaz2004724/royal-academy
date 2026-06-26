@@ -49,17 +49,38 @@ const getLocalDateString = (date) => {
   return `${y}-${m}-${d}`;
 };
 
+const toLocalDateStr = (val) => {
+  if (!val) return "";
+  if (val instanceof Date) {
+    return getLocalDateString(val);
+  }
+  if (typeof val === "string") {
+    if (val.includes("T") || val.includes("Z")) {
+      const parsed = new Date(val);
+      if (!isNaN(parsed.getTime())) {
+        return getLocalDateString(parsed);
+      }
+    }
+    return val.substring(0, 10);
+  }
+  try {
+    const parsed = new Date(val);
+    if (!isNaN(parsed.getTime())) {
+      return getLocalDateString(parsed);
+    }
+  } catch (e) {}
+  return "";
+};
+
 const compareDates = (dateVal1, dateVal2) => {
   if (!dateVal1 || !dateVal2) return false;
-  const d1 = typeof dateVal1 === "string" ? dateVal1.substring(0, 10) : getLocalDateString(dateVal1);
-  const d2 = typeof dateVal2 === "string" ? dateVal2.substring(0, 10) : getLocalDateString(dateVal2);
-  return d1 === d2;
+  return toLocalDateStr(dateVal1) === toLocalDateStr(dateVal2);
 };
 
 const formatArabicDate = (dateStr) => {
   if (!dateStr) return "";
   try {
-    const cleanStr = typeof dateStr === "string" ? dateStr.substring(0, 10) : getLocalDateString(new Date(dateStr));
+    const cleanStr = toLocalDateStr(dateStr);
     const parts = cleanStr.split("-");
     const d = new Date(parts[0], parts[1] - 1, parts[2]);
     const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -194,8 +215,8 @@ const getPlayerSubscriptionDetails = (player, trainings, attendance, payments) =
 
   // Sort sub payments chronologically
   const sortedSubPays = [...playerSubPays].sort((a, b) => {
-    const da = typeof a.date === "string" ? a.date.substring(0, 10) : getLocalDateString(a.date);
-    const db = typeof b.date === "string" ? b.date.substring(0, 10) : getLocalDateString(b.date);
+    const da = toLocalDateStr(a.date);
+    const db = toLocalDateStr(b.date);
     return da.localeCompare(db);
   });
 
@@ -205,7 +226,7 @@ const getPlayerSubscriptionDetails = (player, trainings, attendance, payments) =
 
   for (let c = 1; c <= P; c++) {
     const pay = sortedSubPays[c - 1];
-    let startDateStr = typeof pay.date === "string" ? pay.date.substring(0, 10) : getLocalDateString(pay.date);
+    let startDateStr = toLocalDateStr(pay.date);
     
     if (lastCycleEndDate) {
       if (startDateStr < lastCycleEndDate) {
@@ -2736,8 +2757,8 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
 
     const playerPays = (payments || []).filter(pay => String(pay.playerId) === String(p.id) && pay.type === "subscription");
     const sortedPays = [...playerPays].sort((a, b) => {
-      const da = typeof a.date === "string" ? a.date.substring(0, 10) : getLocalDateString(a.date);
-      const db = typeof b.date === "string" ? b.date.substring(0, 10) : getLocalDateString(b.date);
+      const da = toLocalDateStr(a.date);
+      const db = toLocalDateStr(b.date);
       return db.localeCompare(da);
     });
     const latestRenewalDate = sortedPays.length > 0 ? formatArabicDate(sortedPays[0].date) : "تجديد تلقائي عند التسجيل";
@@ -4740,8 +4761,8 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
 
     const playerPays = (payments || []).filter(pay => String(pay.playerId) === String(p.id) && pay.type === "subscription");
     const sortedPays = [...playerPays].sort((a, b) => {
-      const da = typeof a.date === "string" ? a.date.substring(0, 10) : getLocalDateString(a.date);
-      const db = typeof b.date === "string" ? b.date.substring(0, 10) : getLocalDateString(b.date);
+      const da = toLocalDateStr(a.date);
+      const db = toLocalDateStr(b.date);
       return db.localeCompare(da);
     });
     const latestRenewalDate = sortedPays.length > 0 ? formatArabicDate(sortedPays[0].date) : "تجديد تلقائي عند التسجيل";
@@ -5199,8 +5220,8 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
   
   const childSubPays = (childPays || []).filter(pay => pay.type === "subscription");
   const sortedChildPays = [...childSubPays].sort((a, b) => {
-    const da = typeof a.date === "string" ? a.date.substring(0, 10) : getLocalDateString(a.date);
-    const db = typeof b.date === "string" ? b.date.substring(0, 10) : getLocalDateString(b.date);
+    const da = toLocalDateStr(a.date);
+    const db = toLocalDateStr(b.date);
     return db.localeCompare(da);
   });
   const latestRenewalDate = sortedChildPays.length > 0 ? formatArabicDate(sortedChildPays[0].date) : "تجديد تلقائي عند التسجيل";
@@ -5622,16 +5643,16 @@ function ParentAttendance({ child, childAtt, childPays, t }) {
   // Find the first subscription payment date
   const childSubPays = (childPays || []).filter(pay => pay.type === "subscription");
   const sortedSubPays = [...childSubPays].sort((a, b) => {
-    const da = typeof a.date === "string" ? a.date.substring(0, 10) : getLocalDateString(a.date);
-    const db = typeof b.date === "string" ? b.date.substring(0, 10) : getLocalDateString(b.date);
+    const da = toLocalDateStr(a.date);
+    const db = toLocalDateStr(b.date);
     return da.localeCompare(db);
   });
   const firstSubDate = sortedSubPays[0]
-    ? (typeof sortedSubPays[0].date === "string" ? sortedSubPays[0].date.substring(0, 10) : getLocalDateString(sortedSubPays[0].date))
+    ? toLocalDateStr(sortedSubPays[0].date)
     : "";
 
   const allRecords = childAtt.flatMap(a => {
-    const aDateStr = typeof a.date === "string" ? a.date.substring(0, 10) : getLocalDateString(a.date);
+    const aDateStr = toLocalDateStr(a.date);
     // Ignore attendance records before the child's subscription start date
     if (firstSubDate && aDateStr < firstSubDate) {
       return [];
