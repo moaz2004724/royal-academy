@@ -5178,7 +5178,6 @@ function ParentPortal({ user, onLogout, players, groups, coaches, parents, payme
   const tabs = [
     { id: "overview",   icon: "dashboard",  label: "الرئيسية"    },
     { id: "scores",     icon: "chart",      label: "الأداء"       },
-    { id: "attendance", icon: "attendance", label: "الحضور"       },
     { id: "payments",   icon: "payments",   label: "المصاريف"     },
     { id: "schedule",   icon: "schedule",   label: "المواعيد"     },
     { id: "messages",   icon: "messages",   label: "الرسائل",      badge: unread || undefined },
@@ -5198,7 +5197,6 @@ function ParentPortal({ user, onLogout, players, groups, coaches, parents, payme
       )}
       {tab === "overview"   && <ParentOverview child={child} childGroup={childGroup} childCoach={childCoach} childPays={childPays} childEvals={childEvals} prices={prices} trainings={trainings} coaches={coaches} t={t} attendance={attendance}/>}
       {tab === "scores"     && <ParentScores child={child} childEvals={childEvals} childCoach={childCoach} t={t}/>}
-      {tab === "attendance" && <ParentAttendance child={child} childAtt={childAtt} childPays={childPays} t={t}/>}
       {tab === "payments"   && <ParentPayments child={child} childPays={childPays} prices={prices} t={t}/>}
       {tab === "schedule"   && <ParentSchedule childGroup={childGroup} childCoach={childCoach} trainings={trainings} t={t}/>}
       {tab === "messages"   && <Messaging messages={messages} setMessages={setMessages} meId={user.id} meName={parent.name} coaches={coaches} parents={parents} t={t} role="parent" myCoachIds={myCoachIds} />}
