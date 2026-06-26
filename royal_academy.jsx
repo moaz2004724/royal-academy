@@ -224,7 +224,7 @@ const getPlayerSubscriptionDetails = (player, trainings, attendance, payments) =
     current.setHours(0, 0, 0, 0);
 
     let safety = 0;
-    while (cycleDates.length < 12 && safety < 5000) {
+    while (cycleDates.length < 13 && safety < 5000) {
       safety++;
       const dateStr = getLocalDateString(current);
       if (isGroupTrainingDay(current, dateStr)) {
@@ -2762,7 +2762,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
               ["الأهداف", p.goals || 0],
               ["التمريرات", p.assists || 0],
               ["الباص", p.bus ? `حافلة رقم ${p.bus}` : "لا يوجد"],
-              ["حضور الاشتراك الحالي", `${subDetails.attendedCount} / 12 حصة`],
+              ["حضور الاشتراك الحالي", `${subDetails.attendedCount} / ${subDetails.cycleSessions.length} حصة`],
               ["نسبة حضور الدورة", `${computedAttendancePct}%`],
               ["المجموعة", g?.name || "—"],
               ["ولي الأمر", par?.name || "—"],
@@ -2833,7 +2833,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
                   {subDetails.isExpired && (
                     <div style={{ textAlign: "center", color: "#EF4444", padding: 16, border: `1px dashed #EF4444`, borderRadius: 16, background: "rgba(239,68,68,0.05)", marginBottom: 16 }}>
                       <AnimIcon type="alert" size={20} color="#EF4444" />
-                      <div style={{ fontWeight: 800, marginTop: 6 }}>انتهت الحصص المتاحة (12 / 12)</div>
+                      <div style={{ fontWeight: 800, marginTop: 6 }}>انتهت الحصص المتاحة ({subDetails.cycleSessions.length} / {subDetails.cycleSessions.length})</div>
                       <div style={{ fontSize: 11, color: t.textDim, marginTop: 4 }}>يرجى سداد قيمة الاشتراك الشهري للدورة الجديدة لتفعيل حصص إضافية.</div>
                     </div>
                   )}
@@ -2885,7 +2885,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
                       
                       return (
                         <div key={idx} style={{ background: bgColor, border: `1px solid ${borderCol}`, padding: "10px 6px", borderRadius: 14, textAlign: "center", display: "flex", flexDirection: "column", gap: 4, alignItems: "center", boxShadow: "0 2px 6px rgba(0,0,0,0.01)" }}>
-                          <div style={{ fontSize: 10, color: t.textFaint, fontWeight: 700 }}>حصة {idx + 1}</div>
+                          <div style={{ fontSize: 10, color: idx === 12 ? "#10B981" : t.textFaint, fontWeight: idx === 12 ? 800 : 700 }}>{idx === 12 ? "حصة إضافية مجانية" : `حصة ${idx + 1}`}</div>
                           <div style={{ fontSize: 14 }}>{icon}</div>
                           <div style={{ fontSize: 9, fontWeight: 800, color: textColor }}>{formatArabicDate(s.date)}</div>
                         </div>
@@ -2978,9 +2978,9 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
                     {subDetails.isUnpaid ? (
                       <span style={{ fontSize: 11, fontWeight: 800, color: "#EF4444", background: "rgba(239,68,68,0.1)", padding: "3px 8px", borderRadius: 6 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="alert" size={11} color="#EF4444" /> غير مسدد</span></span>
                     ) : subDetails.isExpired ? (
-                      <span style={{ fontSize: 11, fontWeight: 800, color: "#F59E0B", background: "rgba(245,158,11,0.1)", padding: "3px 8px", borderRadius: 6 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="alert" size={11} color="#F59E0B" /> منتهي</span> ({subDetails.attendedCount} / 12)</span>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: "#F59E0B", background: "rgba(245,158,11,0.1)", padding: "3px 8px", borderRadius: 6 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="alert" size={11} color="#F59E0B" /> منتهي</span> ({subDetails.attendedCount} / {subDetails.cycleSessions.length})</span>
                     ) : (
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#10B981" }}>{subDetails.attendedCount} / 12</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#10B981" }}>{subDetails.attendedCount} / {subDetails.cycleSessions.length}</span>
                     )}
                   </td>
                   <td style={{ padding: "11px 14px" }}><Chip text={p.status} color={p.status === "نشط" ? "#10B981" : "#EF4444"}/></td>
@@ -4762,7 +4762,7 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
               ["الأهداف", p.goals || 0], 
               ["التمريرات", p.assists || 0], 
               ["الباص", p.bus ? `حافلة رقم ${p.bus}` : "لا يوجد"],
-              ["حضور الاشتراك الحالي", `${subDetails.attendedCount} / 12 حصة`], 
+              ["حضور الاشتراك الحالي", `${subDetails.attendedCount} / ${subDetails.cycleSessions.length} حصة`], 
               ["نسبة حضور الدورة", `${computedAttendancePct}%`],
               ["تاريخ التسجيل", formatArabicDate(p.joinDate)],
               ["تجديد الاشتراك", latestRenewalDate]
@@ -4817,7 +4817,7 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
                   {subDetails.isExpired && (
                     <div style={{ textAlign: "center", color: "#EF4444", padding: 16, border: `1px dashed #EF4444`, borderRadius: 16, background: "rgba(239,68,68,0.05)", marginBottom: 16 }}>
                       <AnimIcon type="alert" size={20} color="#EF4444" />
-                      <div style={{ fontWeight: 800, marginTop: 6 }}>انتهت الحصص المتاحة (12 / 12)</div>
+                      <div style={{ fontWeight: 800, marginTop: 6 }}>انتهت الحصص المتاحة ({subDetails.cycleSessions.length} / {subDetails.cycleSessions.length})</div>
                       <div style={{ fontSize: 11, color: t.textDim, marginTop: 4 }}>يرجى سداد قيمة الاشتراك الشهري للدورة الجديدة لتفعيل حصص إضافية.</div>
                     </div>
                   )}
@@ -4869,7 +4869,7 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
                       
                       return (
                         <div key={idx} style={{ background: bgColor, border: `1px solid ${borderCol}`, padding: "10px 6px", borderRadius: 14, textAlign: "center", display: "flex", flexDirection: "column", gap: 4, alignItems: "center", boxShadow: "0 2px 6px rgba(0,0,0,0.01)" }}>
-                          <div style={{ fontSize: 10, color: t.textFaint, fontWeight: 700 }}>حصة {idx + 1}</div>
+                          <div style={{ fontSize: 10, color: idx === 12 ? "#10B981" : t.textFaint, fontWeight: idx === 12 ? 800 : 700 }}>{idx === 12 ? "حصة إضافية مجانية" : `حصة ${idx + 1}`}</div>
                           <div style={{ fontSize: 14 }}>{icon}</div>
                           <div style={{ fontSize: 9, fontWeight: 800, color: textColor }}>{formatArabicDate(s.date)}</div>
                         </div>
@@ -4888,7 +4888,7 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 14 }}>
       {myPlayers.map(p => {
         const subDetails = getPlayerSubscriptionDetails(p, trainings, attendance, payments);
-        const subText = subDetails.isUnpaid ? "غير مسدد" : subDetails.isExpired ? `منتهي (${subDetails.attendedCount} / 12)` : `${subDetails.attendedCount} / 12`;
+        const subText = subDetails.isUnpaid ? "غير مسدد" : subDetails.isExpired ? `منتهي (${subDetails.attendedCount} / ${subDetails.cycleSessions.length})` : `${subDetails.attendedCount} / ${subDetails.cycleSessions.length}`;
         return (
           <Card key={p.id} hover t={t} style={{ padding: 20, cursor: "pointer" }} onClick={() => setSel(p.id)}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
@@ -5381,7 +5381,7 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
               {subDetails.isExpired && (
                 <div style={{ textAlign: "center", color: "#EF4444", padding: 14, border: `1px dashed #EF4444`, borderRadius: 16, background: "rgba(239,68,68,0.04)", marginBottom: 16 }}>
                   <AnimIcon type="alert" size={20} color="#EF4444" />
-                  <div style={{ fontWeight: 800, marginTop: 6 }}>انتهت حصص الدورة الحالية (12 / 12)</div>
+                  <div style={{ fontWeight: 800, marginTop: 6 }}>انتهت حصص الدورة الحالية ({subDetails.cycleSessions.length} / {subDetails.cycleSessions.length})</div>
                   <div style={{ fontSize: 11, color: t.textDim, marginTop: 4 }}>يرجى سداد الاشتراك للدورة القادمة لتفعيل حصص الحضور الإضافية.</div>
                 </div>
               )}
@@ -5445,7 +5445,7 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
                       gap: 4, 
                       alignItems: "center"
                     }}>
-                      <div style={{ fontSize: 10, color: t.textFaint, fontWeight: 700 }}>حصة {idx + 1}</div>
+                      <div style={{ fontSize: 10, color: idx === 12 ? "#10B981" : t.textFaint, fontWeight: idx === 12 ? 800 : 700 }}>{idx === 12 ? "حصة إضافية مجانية" : `حصة ${idx + 1}`}</div>
                       <div style={{ fontSize: 15 }}>{statusIcon}</div>
                       <div style={{ fontSize: 9, fontWeight: 800, color: textColor }}>{formatArabicDate(s.date)}</div>
                     </div>
@@ -5476,7 +5476,7 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
           </div>
 
           {/* Stat Card "حضور الاشتراك" (Fixing the NaN bug by passing value instead of counter) */}
-          <StatCard label="حضور الاشتراك" value={`${subDetails.attendedCount} / 12`} icon="schedule" color="#2563EB" t={t}/>
+          <StatCard label="حضور الاشتراك" value={`${subDetails.attendedCount} / ${subDetails.cycleSessions.length}`} icon="schedule" color="#2563EB" t={t}/>
         </Card>
 
         {/* Skills & Coach Note Card */}
