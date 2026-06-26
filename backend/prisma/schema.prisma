@@ -68,6 +68,7 @@ model Player {
   weight        Float?
   height        Float?
   joinDate      DateTime @default(now())
+  bus           String?
   
   // Stats
   score         Int      @default(80)

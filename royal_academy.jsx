@@ -2355,7 +2355,7 @@ function AdminTeams({ groups, setGroups, coaches, players, t }) {
   const [modal, setModal]   = useState(null);
   const [form, setForm]     = useState({ name: "", coachId: "", color: "#06B6D4" });
   const [selGroup, setSelGroup] = useState(null);
-  const DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+  const DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
 
   const save = () => {
     if (!form.name.trim()) return;
@@ -2720,7 +2720,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
   const [sel, setSel]   = useState(null);
   const [modal, setModal] = useState(false);
   const [search, setSearch] = useState("");
-  const emptyP = { name: "", age: "", groupId: groups[0]?.id || "", phone: "", position: "مهاجم", status: "نشط", score: 80, speed: 75, stamina: 75, technique: 75, teamwork: 75, goals: 0, assists: 0, attendancePct: 90, weight: "", height: "", parentId: "__new__", email: "", password: "" };
+  const emptyP = { name: "", age: "", groupId: groups[0]?.id || "", phone: "", position: "مهاجم", status: "نشط", score: 80, speed: 75, stamina: 75, technique: 75, teamwork: 75, goals: 0, assists: 0, attendancePct: 90, weight: "", height: "", parentId: "__new__", email: "", password: "", bus: "" };
   const [form, setForm] = useState(emptyP);
   const filtered = players.filter(p => p.name.includes(search) || (groups.find(g => g.id === p.groupId)?.name || "").includes(search));
 
@@ -2761,6 +2761,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
               ["الوزن", `${p.weight || '—'} كجم`],
               ["الأهداف", p.goals || 0],
               ["التمريرات", p.assists || 0],
+              ["الباص", p.bus ? `حافلة رقم ${p.bus}` : "لا يوجد"],
               ["حضور الاشتراك الحالي", `${subDetails.attendedCount} / 12 حصة`],
               ["نسبة حضور الدورة", `${computedAttendancePct}%`],
               ["المجموعة", g?.name || "—"],
@@ -2908,6 +2909,19 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
               <div style={{ flex: "1 1 calc(50% - 7px)" }}><Input label="العمر" value={form.age} onChange={v => setForm(x => ({ ...x, age: +v }))} type="number" t={t}/></div>
               <div style={{ flex: "1 1 calc(50% - 7px)" }}><Input label="الطول (سم)" value={form.height} onChange={v => setForm(x => ({ ...x, height: +v }))} type="number" t={t}/></div>
               <div style={{ flex: "1 1 calc(50% - 7px)" }}><Input label="الوزن (كجم)" value={form.weight} onChange={v => setForm(x => ({ ...x, weight: +v }))} type="number" t={t}/></div>
+              <div style={{ flex: "1 1 100%", display: "flex", flexDirection: "column", gap: 6, marginBottom: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input type="checkbox" id="hasBusEdit" checked={!!form.bus} 
+                    onChange={e => setForm(x => ({ ...x, bus: e.target.checked ? (x.bus || "مشترك") : "" }))}
+                    style={{ width: 16, height: 16, accentColor: t.purple, cursor: "pointer" }} />
+                  <label htmlFor="hasBusEdit" style={{ fontSize: 12, color: t.text, fontWeight: 700, cursor: "pointer" }}>اشتراك الباص</label>
+                </div>
+                {!!form.bus && (
+                  <div style={{ marginTop: 6 }}>
+                    <Input label="رقم الباص / تفاصيل الباص" value={form.bus === "مشترك" ? "" : form.bus} onChange={v => setForm(x => ({ ...x, bus: v || "مشترك" }))} placeholder="أدخل رقم الباص..." t={t}/>
+                  </div>
+                )}
+              </div>
             </div>
             <div style={{ display: "flex", gap: 10 }}>
               <Btn onClick={() => { setPlayers(ps => ps.map(x => x.id === form.id ? { ...form } : x)); setModal(null); }} style={{ flex: 1 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="save" size={14} color="currentColor" /> حفظ</span></Btn>
@@ -3006,6 +3020,19 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
                 ]}
                 t={t}
               />
+            </div>
+            <div style={{ flex: "1 1 100%", display: "flex", flexDirection: "column", gap: 6, marginBottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input type="checkbox" id="hasBusAdd" checked={!!form.bus} 
+                  onChange={e => setForm(x => ({ ...x, bus: e.target.checked ? (x.bus || "مشترك") : "" }))}
+                  style={{ width: 16, height: 16, accentColor: t.purple, cursor: "pointer" }} />
+                <label htmlFor="hasBusAdd" style={{ fontSize: 12, color: t.text, fontWeight: 700, cursor: "pointer" }}>اشتراك الباص</label>
+              </div>
+              {!!form.bus && (
+                <div style={{ marginTop: 6 }}>
+                  <Input label="رقم الباص / تفاصيل الباص" value={form.bus === "مشترك" ? "" : form.bus} onChange={v => setForm(x => ({ ...x, bus: v || "مشترك" }))} placeholder="أدخل رقم الباص..." t={t}/>
+                </div>
+              )}
             </div>
           </div>
           <div style={{ padding: 12, background: "rgba(16,185,129,.05)", borderRadius: 10, border: "1px dashed rgba(16,185,129,.2)", marginBottom: 15, fontSize: 11, color: t.textDim }}>
@@ -3680,7 +3707,7 @@ function AdminTrainings({ trainings, setTrainings, groups, coaches, t }) {
     isFriendly: false
   };
   const [form, setForm] = useState(empty);
-  const DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+  const DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
 
   const save = () => {
     if (!form.groupId) {
@@ -4734,6 +4761,7 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
               ["الوزن", `${p.weight || '—'} كجم`], 
               ["الأهداف", p.goals || 0], 
               ["التمريرات", p.assists || 0], 
+              ["الباص", p.bus ? `حافلة رقم ${p.bus}` : "لا يوجد"],
               ["حضور الاشتراك الحالي", `${subDetails.attendedCount} / 12 حصة`], 
               ["نسبة حضور الدورة", `${computedAttendancePct}%`],
               ["تاريخ التسجيل", formatArabicDate(p.joinDate)],
@@ -5239,6 +5267,7 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
                   <Chip text={childGroup?.name || "بدون فريق"} color="#2563EB"/>
                   <Chip text={`مدرب: ${childCoach?.name || "طاقم التدريب"}`} color="#10B981"/>
                   <Chip text={child.status} color={child.status === "نشط" ? "#10B981" : "#EF4444"}/>
+                  {child.bus && <Chip text={`الباص: ${child.bus}`} color="#EC4899" />}
                 </div>
               </div>
             </div>
