@@ -261,14 +261,23 @@ const getPlayerSubscriptionDetails = (player, trainings, attendance, payments) =
     });
   }
 
-  // The active cycle is the P-th cycle
-  const currentCycle = cycles[P - 1];
+  // Find the active cycle: the first one that has not expired yet (last session >= today)
+  let activeCycleIndex = P - 1;
+  for (let i = 0; i < P; i++) {
+    const sessions = cycles[i].sessions;
+    const lastSession = sessions[sessions.length - 1] || "";
+    if (lastSession && lastSession >= todayStr) {
+      activeCycleIndex = i;
+      break;
+    }
+  }
+  const currentCycle = cycles[activeCycleIndex];
   const lastSessionDate = currentCycle ? (currentCycle.sessions[currentCycle.sessions.length - 1] || "") : "";
   
   // A cycle is expired if its last session is already in the past (strictly < todayStr)
   const isExpired = lastSessionDate ? lastSessionDate < todayStr : false;
   
-  // Let's populate cycleSessions details for the active cycle P
+  // Let's populate cycleSessions details for the active cycle
   const cycleSessions = [];
   currentCycle.sessions.forEach(dateStr => {
     const isFuture = dateStr > todayStr;
@@ -313,7 +322,7 @@ const getPlayerSubscriptionDetails = (player, trainings, attendance, payments) =
     absentCount,
     excusedCount,
     remainingCount,
-    cycleIndex: P,
+    cycleIndex: activeCycleIndex + 1,
     isUnpaid: false,
     isExpired,
     isActive: !isExpired
