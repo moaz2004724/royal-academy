@@ -3529,7 +3529,7 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ background: t.bg, borderBottom: `1px solid ${t.border}` }}>
-              {["اللاعب", "النوع", "الشهر", "المبلغ", "المستلم", "التاريخ", "ملاحظة", "فاتورة"].map(h => (
+              {["اللاعب", "النوع", "الشهر", "المبلغ", "المستلم", "التاريخ", "ملاحظة", "الإجراءات"].map(h => (
                 <th key={h} style={{ padding: "12px 14px", textAlign: "right", fontSize: 10, color: t.textDim, fontWeight: 700 }}>{h}</th>
               ))}
             </tr>
@@ -3547,21 +3547,42 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
                   <td style={{ padding: "11px 14px", fontSize: 11, color: t.textDim }}>{p.date}</td>
                   <td style={{ padding: "11px 14px", fontSize: 11, color: t.textDim }}>{p.note || "—"}</td>
                   <td style={{ padding: "8px 14px" }}>
-                    <button
-                      onClick={() => setInvoicePay(p)}
-                      title="إصدار فاتورة"
-                      style={{
-                        padding: "6px 12px", borderRadius: 8, border: "1px solid #7C3AED",
-                        background: "rgba(37,99,235,0.10)", color: "#A78BFA",
-                        fontSize: 11, fontWeight: 700, cursor: "pointer",
-                        fontFamily: "'Cairo',sans-serif", display: "flex", alignItems: "center", gap: 5,
-                        transition: "all .15s", whiteSpace: "nowrap"
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "rgba(37,99,235,0.22)"; e.currentTarget.style.color = "#60A5FA"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(37,99,235,0.10)"; e.currentTarget.style.color = "#A78BFA"; }}
-                    >
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="receipt" size={12} color="currentColor" /> فاتورة</span>
-                    </button>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <button
+                        onClick={() => setInvoicePay(p)}
+                        title="إصدار فاتورة"
+                        style={{
+                          padding: "6px 12px", borderRadius: 8, border: "1px solid #7C3AED",
+                          background: "rgba(37,99,235,0.10)", color: "#A78BFA",
+                          fontSize: 11, fontWeight: 700, cursor: "pointer",
+                          fontFamily: "'Cairo',sans-serif", display: "flex", alignItems: "center", gap: 5,
+                          transition: "all .15s", whiteSpace: "nowrap"
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(37,99,235,0.22)"; e.currentTarget.style.color = "#60A5FA"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(37,99,235,0.10)"; e.currentTarget.style.color = "#A78BFA"; }}
+                      >
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="receipt" size={12} color="currentColor" /> فاتورة</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`هل أنت متأكد من حذف هذه المعاملة الخاصة بـ ${p.playerName} بقيمة ${fmtMoney(p.amount)}؟`)) {
+                            setPayments(ps => ps.filter(x => x.id !== p.id));
+                          }
+                        }}
+                        title="حذف المعاملة"
+                        style={{
+                          padding: "6px 12px", borderRadius: 8, border: "1px solid #EF4444",
+                          background: "rgba(239,68,68,0.10)", color: "#FCA5A5",
+                          fontSize: 11, fontWeight: 700, cursor: "pointer",
+                          fontFamily: "'Cairo',sans-serif", display: "flex", alignItems: "center", gap: 5,
+                          transition: "all .15s", whiteSpace: "nowrap"
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.22)"; e.currentTarget.style.color = "#EF4444"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(239,68,68,0.10)"; e.currentTarget.style.color = "#FCA5A5"; }}
+                      >
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="cross" size={12} color="currentColor" /> حذف</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
