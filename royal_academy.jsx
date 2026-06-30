@@ -3514,19 +3514,30 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
     const player = players.find(p => p.id === form.playerId);
     const coach  = coaches.find(c => c.id === form.coachId);
     
-    const newPayments = form.types.map(type => ({
-      id: `pay${Date.now()}-${type}`,
-      playerId: form.playerId,
-      playerName: player?.name || "",
-      coachId: form.coachId,
-      coachName: coach?.name || (form.coachId === "none" ? "الإدارة" : ""),
-      type: type,
-      amount: prices[type] || 0,
-      discount: form.discount || 0,
-      month: form.month,
-      date: form.date,
-      note: form.note
-    }));
+    const hasSubscription = form.types.includes("subscription");
+
+    const newPayments = form.types.map(type => {
+      let itemDiscount = 0;
+      if (hasSubscription) {
+        if (type === "subscription") itemDiscount = form.discount || 0;
+      } else {
+        if (type === form.types[0]) itemDiscount = form.discount || 0;
+      }
+
+      return {
+        id: `pay${Date.now()}-${type}`,
+        playerId: form.playerId,
+        playerName: player?.name || "",
+        coachId: form.coachId,
+        coachName: coach?.name || (form.coachId === "none" ? "الإدارة" : ""),
+        type: type,
+        amount: prices[type] || 0,
+        discount: itemDiscount,
+        month: form.month,
+        date: form.date,
+        note: form.note
+      };
+    });
 
     setPayments(ps => [...ps, ...newPayments]);
     setModal(false);
