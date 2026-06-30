@@ -665,27 +665,6 @@ app.delete('/api/messages/:id', async (req, res) => {
   }
 });
 
-app.post('/api/fix-abdullah-payment', async (req, res) => {
-  try {
-    const busUpdate = await prisma.payment.updateMany({
-      where: { id: 'pay1782855246466-bus' },
-      data: { discount: 0 }
-    });
-    const uniformUpdate = await prisma.payment.updateMany({
-      where: { id: 'pay1782855246466-uniform' },
-      data: { discount: 0 }
-    });
-    res.json({
-      success: true,
-      busCount: busUpdate.count,
-      uniformCount: uniformUpdate.count
-    });
-  } catch (e) {
-    console.error("Error fixing Abdullah payments:", e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
