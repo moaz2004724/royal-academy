@@ -665,6 +665,28 @@ app.delete('/api/messages/:id', async (req, res) => {
   }
 });
 
+app.post('/api/fix-abdullah-attendance', async (req, res) => {
+  try {
+    const attendanceRecord = await prisma.attendance.findUnique({
+      where: { id: 'att1782855034804' }
+    });
+    if (attendanceRecord && attendanceRecord.records) {
+      const records = { ...attendanceRecord.records };
+      records['p1782596017456'] = 'حاضر';
+      const updated = await prisma.attendance.update({
+        where: { id: 'att1782855034804' },
+        data: { records }
+      });
+      res.json({ success: true, updated });
+    } else {
+      res.status(404).json({ error: 'Record not found' });
+    }
+  } catch (e) {
+    console.error("Error fixing attendance:", e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
