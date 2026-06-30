@@ -199,6 +199,19 @@ app.post('/api/players', async (req, res) => {
     const resolvedWeight = (p.weight && !isNaN(p.weight)) ? parseFloat(p.weight) : null;
     const resolvedHeight = (p.height && !isNaN(p.height)) ? parseFloat(p.height) : null;
 
+    // Validate that nationalId is unique
+    if (p.nationalId && p.nationalId.trim()) {
+      const duplicate = await prisma.player.findFirst({
+        where: {
+          nationalId: p.nationalId.trim(),
+          NOT: p.id ? { id: p.id } : undefined
+        }
+      });
+      if (duplicate) {
+        return res.status(400).json({ error: 'اللاعب مسجل مسبقاً برقم الهوية هذا' });
+      }
+    }
+
     // Create or update the Player record
     // Safe upsert: try update first, fall back to create
     let player;
@@ -215,6 +228,7 @@ app.post('/api/players', async (req, res) => {
           score: p.score ? +p.score : null,
           joinDate: p.joinDate ? new Date(p.joinDate) : undefined,
           bus: p.bus,
+          nationalId: p.nationalId ? p.nationalId.trim() : null,
           group: { connect: { id: p.groupId } },
           parent: { connect: { id: resolvedParentId } }
         }
@@ -230,6 +244,7 @@ app.post('/api/players', async (req, res) => {
           score: p.score ? +p.score : 80,
           joinDate: p.joinDate ? new Date(p.joinDate) : undefined,
           bus: p.bus,
+          nationalId: p.nationalId ? p.nationalId.trim() : null,
           group: { connect: { id: p.groupId } },
           parent: { connect: { id: resolvedParentId } }
         }
@@ -246,7 +261,8 @@ app.post('/api/players', async (req, res) => {
 
 app.post('/api/payments', async (req, res) => {
   try {
-    const { id, playerId, playerName, coachId, coachName, type, month, amount, date, note } = req.body;
+    const { id, playerId, playerName, coachId, coachName, type, month, amount, date, note, discount } = req.body;
+    const resolvedDiscount = (discount !== undefined && discount !== null && !isNaN(discount)) ? parseFloat(discount) : 0;
     const payment = await prisma.payment.upsert({
       where: { id: id || 'new' },
       update: { 
@@ -256,7 +272,8 @@ app.post('/api/payments', async (req, res) => {
         coachName, 
         type, 
         month, 
-        amount, 
+        amount: parseFloat(amount),
+        discount: resolvedDiscount,
         date: new Date(date), 
         note 
       },
@@ -268,7 +285,8 @@ app.post('/api/payments', async (req, res) => {
         coachName, 
         type, 
         month, 
-        amount, 
+        amount: parseFloat(amount),
+        discount: resolvedDiscount,
         date: new Date(date), 
         note 
       }

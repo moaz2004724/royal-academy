@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,152 +7,157 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  COACH
-  PARENT
-  PLAYER
-}
-
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(PARENT)
-  phone     String?
-  createdAt DateTime @default(now())
-
-  // Relations
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String
+  role          Role     @default(PARENT)
+  phone         String?
+  createdAt     DateTime @default(now())
+  academyId     String?
   coachProfile  Coach?
   parentProfile Parent?
   playerProfile Player?
+  Academy       Academy? @relation(fields: [academyId], references: [id], onDelete: Cascade)
 }
 
 model Coach {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-  specialty String?
-  exp       Int?
-  cert      String?
-  salary    Float?
-  groupId   String?  @unique
-  group     Group?   @relation("GroupCoach", fields: [groupId], references: [id])
-  
-  attendance Attendance[]
+  id          String       @id @default(cuid())
+  userId      String       @unique
+  specialty   String?
+  exp         Int?
+  cert        String?
+  salary      Float?
+  groupId     String?      @unique
+  perms       Json?
+  academyId   String
+  attendance  Attendance[]
+  Academy     Academy      @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  group       Group?       @relation("GroupCoach", fields: [groupId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   evaluations Evaluation[]
   trainings   Training[]
-  perms       Json?    // { "attendance": true, "payments": false, ... }
 }
 
 model Parent {
-  id      String   @id @default(cuid())
-  userId  String   @unique
-  user    User     @relation(fields: [userId], references: [id])
-  players Player[]
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  academyId String
+  Academy   Academy  @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  players   Player[]
 }
 
 model Player {
-  id            String   @id @default(cuid())
-  userId        String?  @unique
-  user          User?    @relation(fields: [userId], references: [id])
+  id            String       @id @default(cuid())
+  userId        String?      @unique
   name          String
   age           Int
   phone         String?
-  status        String   @default("نشط")
+  status        String       @default("نشط")
   position      String?
   weight        Float?
   height        Float?
-  joinDate      DateTime @default(now())
+  joinDate      DateTime     @default(now())
   bus           String?
-  
-  // Stats
-  score         Int      @default(80)
-  speed         Int      @default(75)
-  stamina       Int      @default(75)
-  technique     Int      @default(75)
-  teamwork      Int      @default(75)
-  goals         Int      @default(0)
-  assists       Int      @default(0)
-  attendancePct Int      @default(90)
-
+  nationalId    String?
+  score         Int          @default(80)
+  speed         Int          @default(75)
+  stamina       Int          @default(75)
+  technique     Int          @default(75)
+  techniqueVal  Int?
+  teamwork      Int          @default(75)
+  goals         Int          @default(0)
+  assists       Int          @default(0)
+  attendancePct Int          @default(90)
   groupId       String
-  group         Group    @relation(fields: [groupId], references: [id])
   parentId      String
-  parent        Parent   @relation(fields: [parentId], references: [id])
-  
-  payments      Payment[]
+  academyId     String
   evaluations   Evaluation[]
+  payments      Payment[]
+  Academy       Academy      @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  group         Group        @relation(fields: [groupId], references: [id])
+  parent        Parent       @relation(fields: [parentId], references: [id])
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Group {
-  id        String   @id @default(cuid())
-  name      String
-  color     String   @default("#06B6D4")
-  coachId   String?  @unique
-  coach     Coach?   @relation("GroupCoach")
-  players   Player[]
-  trainings Training[]
+  id         String       @id @default(cuid())
+  name       String
+  color      String       @default("#06B6D4")
+  coachId    String?      @unique
+  academyId  String
   attendance Attendance[]
+  coach      Coach?       @relation("GroupCoach")
+  Academy    Academy      @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  players    Player[]
+  trainings  Training[]
 }
 
 model Payment {
   id         String   @id @default(cuid())
   playerId   String
-  player     Player   @relation(fields: [playerId], references: [id])
   playerName String?
   coachId    String?
   coachName  String?
   type       String
   month      String
   amount     Float
+  discount   Float?   @default(0)
   date       DateTime @default(now())
   note       String?
+  academyId  String
+  Academy    Academy  @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  player     Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 }
 
 model Attendance {
   id        String   @id @default(cuid())
   date      DateTime
   groupId   String
-  group     Group    @relation(fields: [groupId], references: [id])
   coachId   String?
+  records   Json
+  academyId String
+  Academy   Academy  @relation(fields: [academyId], references: [id], onDelete: Cascade)
   coach     Coach?   @relation(fields: [coachId], references: [id])
-  records   Json     // { "playerId": "حاضر", ... }
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model Evaluation {
   id        String   @id @default(cuid())
   playerId  String
-  player    Player   @relation(fields: [playerId], references: [id])
   coachId   String
-  coach     Coach    @relation(fields: [coachId], references: [id])
   date      DateTime @default(now())
   note      String?
   speed     Int
   technique Int
   teamwork  Int
+  academyId String
+  Academy   Academy  @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  coach     Coach    @relation(fields: [coachId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 }
 
 model Message {
-  id         String   @id @default(cuid())
-  from       String
-  to         String
-  fromName   String
-  toName     String
-  text       String
-  files      Json?
-  date       DateTime @default(now())
-  read       Boolean  @default(false)
+  id        String   @id @default(cuid())
+  from      String
+  to        String
+  fromName  String
+  toName    String
+  text      String
+  files     Json?
+  date      DateTime @default(now())
+  read      Boolean  @default(false)
+  academyId String
+  Academy   Academy  @relation(fields: [academyId], references: [id], onDelete: Cascade)
 }
 
 model Training {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   groupId       String
-  group         Group    @relation(fields: [groupId], references: [id])
   coachId       String
-  coach         Coach    @relation(fields: [coachId], references: [id])
-  days          String[] // ["الأحد", "الأربعاء"]
+  days          String[]
   time          String
   duration      Int
   field         String
@@ -163,7 +165,57 @@ model Training {
   trainingFocus String?
   note          String?
   date          DateTime?
-  isRecurring   Boolean  @default(true)
-  type          String   @default("training") // "training" or "match"
-  isFriendly    Boolean  @default(false)
+  isRecurring   Boolean   @default(true)
+  type          String    @default("training")
+  isFriendly    Boolean   @default(false)
+  academyId     String
+  Academy       Academy   @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  coach         Coach     @relation(fields: [coachId], references: [id])
+  group         Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+model Academy {
+  id              String       @id
+  name            String
+  slug            String       @unique
+  logo            String?
+  primaryColor    String       @default("#06B6D4")
+  secondaryColor  String       @default("#FF7C00")
+  backgroundColor String       @default("#0B0F19")
+  textColor       String       @default("#FFFFFF")
+  planName        String       @default("المبتدئ")
+  status          String       @default("نشط")
+  studentLimit    Int          @default(50)
+  startDate       DateTime     @default(now())
+  endDate         DateTime
+  adminPortal     Boolean      @default(true)
+  coachPortal     Boolean      @default(true)
+  parentPortal    Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  Attendance      Attendance[]
+  Coach           Coach[]
+  Evaluation      Evaluation[]
+  Group           Group[]
+  Message         Message[]
+  Parent          Parent[]
+  Payment         Payment[]
+  Player          Player[]
+  Training        Training[]
+  User            User[]
+}
+
+model Plan {
+  id           String   @id
+  name         String   @unique
+  studentLimit Int      @default(50)
+  price        Float    @default(0)
+  createdAt    DateTime @default(now())
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  COACH
+  PARENT
+  PLAYER
 }

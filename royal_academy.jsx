@@ -1855,14 +1855,14 @@ function AdminOverview({ players, coaches, groups, payments, attendance = [], t 
   const [toastMsg, setToastMsg] = useState(null);
   
   // Basic calculations
-  const total = payments.reduce((a, p) => a + p.amount, 0);
-  const month = payments.filter(p => p.month === CUR_MONTH).reduce((a, p) => a + p.amount, 0);
+  const total = payments.reduce((a, p) => a + p.amount - (p.discount || 0), 0);
+  const month = payments.filter(p => p.month === CUR_MONTH).reduce((a, p) => a + p.amount - (p.discount || 0), 0);
   const active = players.filter(p => p.status === "نشط").length;
   const unpaid = players.filter(p => !payments.some(pay => pay.playerId === p.id && pay.type === "subscription" && pay.month === CUR_MONTH)).length;
   const byType = Object.entries(PAY_TYPES).map(([k, v]) => ({
     ...v,
     k,
-    total: payments.filter(p => p.type === k).reduce((a, p) => a + p.amount, 0),
+    total: payments.filter(p => p.type === k).reduce((a, p) => a + p.amount - (p.discount || 0), 0),
     count: payments.filter(p => p.type === k).length
   }));
 
@@ -1880,7 +1880,7 @@ function AdminOverview({ players, coaches, groups, payments, attendance = [], t 
     
     const monthIncome = payments
       .filter(p => p.month === monthKey || (p.date && p.date.startsWith(`${year}-${String(d.getMonth() + 1).padStart(2, '0')}`)))
-      .reduce((sum, p) => sum + (p.amount || 0), 0);
+      .reduce((sum, p) => sum + (p.amount || 0) - (p.discount || 0), 0);
 
     revData.push({
       month: monthName,
@@ -2350,7 +2350,7 @@ function AdminOverview({ players, coaches, groups, payments, attendance = [], t 
             <div style={{ display: "flex", flexDirection: "column", gap: 10, overflowY: "auto", maxHeight: 280 }}>
               {coaches.map(c => {
                 const cPays = payments.filter(p => p.coachId === c.id);
-                const rev = cPays.reduce((a, p) => a + p.amount, 0);
+                const rev = cPays.reduce((a, p) => a + p.amount - (p.discount || 0), 0);
                 const g = groups.find(x => x.id === c.groupId);
                 const salaryVal = Number(c.salary) || 0;
                 
@@ -2594,7 +2594,7 @@ function AdminCoaches({ coaches, setCoaches, groups, players, payments, t }) {
     }
     const g = groups.find(x => x.id === c.groupId);
     const cPays = payments.filter(p => p.coachId === c.id);
-    const rev = cPays.reduce((a, p) => a + p.amount, 0);
+    const rev = cPays.reduce((a, p) => a + p.amount - (p.discount || 0), 0);
     const cPlayers = players.filter(p => p.groupId === c.groupId);
     const perms = c.perms || { ...DEFAULT_PERMS };
 
@@ -2661,7 +2661,11 @@ function AdminCoaches({ coaches, setCoaches, groups, players, payments, t }) {
                 return (
                   <div key={p.id} className={t.name === "dark" ? "rh" : "rhl"} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 4px", borderBottom: `1px solid ${t.border}`, transition: "background .15s" }}>
                     <div style={{ display: "flex", gap: 9, alignItems: "center" }}><AnimIcon type={pt.icon} size={16} color={pt.color} /><div><div style={{ fontSize: 12, fontWeight: 600, color: t.text }}>{p.playerName}</div><div style={{ fontSize: 10, color: t.textDim }}>{pt.label} · {p.month}</div></div></div>
-                    <div style={{ textAlign: "left" }}><div style={{ fontSize: 13, fontWeight: 800, color: pt.color }}>{fmtMoney(p.amount)}</div><div style={{ fontSize: 10, color: t.textDim }}>{p.date}</div></div>
+                    <div style={{ textAlign: "left" }}>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: pt.color }}>{fmtMoney(p.amount - (p.discount || 0))}</div>
+                      {p.discount > 0 && <div style={{ fontSize: 9, color: "#EF4444", fontWeight: 700 }}>خصم {fmtMoney(p.discount)}</div>}
+                      <div style={{ fontSize: 10, color: t.textDim }}>{p.date}</div>
+                    </div>
                   </div>
                 );
               })}
@@ -2696,7 +2700,7 @@ function AdminCoaches({ coaches, setCoaches, groups, players, payments, t }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 14 }}>
         {coaches.map(c => {
           const g   = groups.find(x => x.id === c.groupId);
-          const rev = payments.filter(p => p.coachId === c.id).reduce((a, p) => a + p.amount, 0);
+          const rev = payments.filter(p => p.coachId === c.id).reduce((a, p) => a + p.amount - (p.discount || 0), 0);
           const perms = c.perms || { ...DEFAULT_PERMS };
           const enabledCount = Object.values(perms).filter(Boolean).length;
           return (
@@ -2787,6 +2791,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
             </div>
             {[
               ["العمر", `${p.age || '—'} سنة`],
+              ["رقم الهوية", p.nationalId || "—"],
               ["الطول", `${p.height || '—'} سم`],
               ["الوزن", `${p.weight || '—'} كجم`],
               ["الأهداف", p.goals || 0],
@@ -2930,7 +2935,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
         {modal && (
           <Modal title="تعديل بيانات اللاعب" onClose={() => setModal(null)} wide t={t}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0 14px" }}>
-              {[["الاسم", "name"], ["الهاتف", "phone"], ["الإيميل", "email"], ["كلمة المرور", "password"]].map(([l, f]) => (
+              {[["الاسم", "name"], ["الهاتف", "phone"], ["رقم الهوية", "nationalId"], ["الإيميل", "email"], ["كلمة المرور", "password"]].map(([l, f]) => (
                 <div key={f} style={{ flex: "1 1 calc(50% - 7px)" }}><Input label={l} value={form[f] || ""} onChange={v => setForm(x => ({ ...x, [f]: v }))} t={t}/></div>
               ))}
               <div style={{ flex: "1 1 calc(50% - 7px)" }}><Input label="المجموعة" value={form.groupId} onChange={v => setForm(x => ({ ...x, groupId: v }))} options={groups.map(g => ({ v: g.id, l: g.name }))} t={t}/></div>
@@ -2954,7 +2959,17 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
               </div>
             </div>
             <div style={{ display: "flex", gap: 10 }}>
-              <Btn onClick={() => { setPlayers(ps => ps.map(x => x.id === form.id ? { ...form } : x)); setModal(null); }} style={{ flex: 1 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="save" size={14} color="currentColor" /> حفظ</span></Btn>
+              <Btn onClick={() => {
+                if (form.nationalId && form.nationalId.trim()) {
+                  const exists = players.some(p => p.nationalId === form.nationalId.trim() && p.id !== form.id);
+                  if (exists) {
+                    alert("اللاعب مسجل مسبقاً برقم الهوية هذا!");
+                    return;
+                  }
+                }
+                setPlayers(ps => ps.map(x => x.id === form.id ? { ...form } : x));
+                setModal(null);
+              }} style={{ flex: 1 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="save" size={14} color="currentColor" /> حفظ</span></Btn>
               <Btn variant="secondary" onClick={() => setModal(null)}>إلغاء</Btn>
             </div>
           </Modal>
@@ -3030,7 +3045,7 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
       {modal === "add" && (
         <Modal title="إضافة لاعب جديد" onClose={() => setModal(null)} wide t={t}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0 14px" }}>
-            {[["الاسم الكامل", "name"], ["رقم الهاتف (للدخول)", "phone"]].map(([l, f]) => (
+            {[["الاسم الكامل", "name"], ["رقم الهاتف (للدخول)", "phone"], ["رقم الهوية الوطنية", "nationalId"]].map(([l, f]) => (
               <div key={f} style={{ flex: "1 1 calc(50% - 7px)" }}><Input label={l} value={form[f] || ""} onChange={v => setForm(x => ({ ...x, [f]: v }))} t={t}/></div>
             ))}
             <div style={{ flex: "1 1 calc(50% - 7px)" }}><Input label="المجموعة" value={form.groupId} onChange={v => setForm(x => ({ ...x, groupId: v }))} options={groups.map(g => ({ v: g.id, l: g.name }))} t={t}/></div>
@@ -3085,6 +3100,13 @@ function AdminPlayers({ players, setPlayers, groups, parents, evals, coaches, t,
                 alert("الرجاء إدخال عمر اللاعب (مطلوب)");
                 return;
               }
+              if (form.nationalId && form.nationalId.trim()) {
+                const exists = players.some(p => p.nationalId === form.nationalId.trim());
+                if (exists) {
+                  alert("اللاعب مسجل مسبقاً برقم الهوية هذا!");
+                  return;
+                }
+              }
               const phone = form.phone.trim();
               // إذا اختار المدير ولي أمر موجود → استخدم ID الحساب الموجود
               // إذا اختار "جديد" أو لم يختر → أنشئ parentId من رقم الهاتف
@@ -3131,7 +3153,7 @@ function InvoiceModal({ payment, allPayments, players, parents, onClose }) {
 
   const player = players.find(p => p.id === payment.playerId);
   const parent = parents ? parents.find(par => par.id === player?.parentId) : null;
-  const totalAmount = relatedPayments.reduce((sum, p) => sum + p.amount, 0);
+  const totalAmount = relatedPayments.reduce((sum, p) => sum + p.amount - (p.discount || 0), 0);
   const invoiceNum = `INV-${payment.id.replace(/\D/g, '').slice(-8).padStart(8, '0')}`;
 
   const TERMS = [
@@ -3373,7 +3395,17 @@ function InvoiceModal({ payment, allPayments, players, parents, onClose }) {
                       <td style={{ padding: '11px 14px', fontSize: 12, fontWeight: 700, color: '#666', width: 36 }}>{idx + 1}</td>
                       <td style={{ padding: '11px 14px', fontSize: 13, fontWeight: 700, color: '#1a1a2e' }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><AnimIcon type={pt?.icon} size={14} color={pt?.color} /> {pt?.label || p.type}</span></td>
                       <td style={{ padding: '11px 14px', fontSize: 11, color: '#777' }}>{p.month}{p.note ? ` — ${p.note}` : ''}</td>
-                      <td style={{ padding: '11px 14px', fontSize: 14, fontWeight: 900, color: '#1D4ED8', textAlign: 'left' }}>{fmtMoney(p.amount)}</td>
+                      <td style={{ padding: '11px 14px', fontSize: 14, fontWeight: 900, color: '#1D4ED8', textAlign: 'left' }}>
+                        {p.discount > 0 ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <span style={{ textDecoration: 'line-through', fontSize: 11, color: '#aaa', fontWeight: 600 }}>{fmtMoney(p.amount)}</span>
+                            <span style={{ fontSize: 10, color: '#EF4444', fontWeight: 700, margin: '2px 0' }}>خصم {fmtMoney(p.discount)}</span>
+                            <span>{fmtMoney(p.amount - p.discount)}</span>
+                          </div>
+                        ) : (
+                          fmtMoney(p.amount)
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
@@ -3458,12 +3490,14 @@ function InvoiceModal({ payment, allPayments, players, parents, onClose }) {
 function AdminPayments({ payments, setPayments, players, coaches, parents, prices, t }) {
   const [modal, setModal] = useState(false);
   const [invoicePay, setInvoicePay] = useState(null);
+  const [editModalPay, setEditModalPay] = useState(null);
+  const [editForm, setEditForm] = useState(null);
   const [fc, setFc] = useState("الكل");
   const [ft, setFt] = useState("الكل");
   
   const MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"].map(m => `${m} 2026`);
   
-  const empty = { playerId: players[0]?.id || "", coachId: coaches[0]?.id || "none", types: ["subscription"], month: CUR_MONTH, note: "", date: getLocalDateString(new Date()) };
+  const empty = { playerId: players[0]?.id || "", coachId: coaches[0]?.id || "none", types: ["subscription"], month: CUR_MONTH, note: "", date: getLocalDateString(new Date()), discount: 0 };
   const [form, setForm] = useState(empty);
   const filtered = payments.filter(p => (fc === "الكل" || p.coachId === fc) && (ft === "الكل" || p.type === ft));
 
@@ -3488,6 +3522,7 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
       coachName: coach?.name || (form.coachId === "none" ? "الإدارة" : ""),
       type: type,
       amount: prices[type] || 0,
+      discount: form.discount || 0,
       month: form.month,
       date: form.date,
       note: form.note
@@ -3495,6 +3530,11 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
 
     setPayments(ps => [...ps, ...newPayments]);
     setModal(false);
+  };
+
+  const saveEdit = () => {
+    setPayments(ps => ps.map(x => x.id === editForm.id ? { ...editForm, amount: +editForm.amount, discount: +editForm.discount || 0 } : x));
+    setEditModalPay(null);
   };
 
   const totalAmount = form.types.reduce((sum, type) => sum + (prices[type] || 0), 0);
@@ -3542,7 +3582,16 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
                   <td style={{ padding: "11px 14px", fontSize: 12, fontWeight: 600, color: t.text }}>{p.playerName}</td>
                   <td style={{ padding: "11px 14px" }}><Chip text={pt ? <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><AnimIcon type={pt.icon} size={11} color={pt.color} />{pt.label}</span> : p.type} color={pt?.color || "#2563EB"}/></td>
                   <td style={{ padding: "11px 14px", fontSize: 12, color: t.textDim }}>{p.month}</td>
-                  <td style={{ padding: "11px 14px", fontSize: 13, fontWeight: 800, color: pt?.color || "#10B981" }}>{fmtMoney(p.amount)}</td>
+                  <td style={{ padding: "11px 14px", fontSize: 13, fontWeight: 800, color: pt?.color || "#10B981" }}>
+                    {p.discount > 0 ? (
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span>{fmtMoney(p.amount - (p.discount || 0))}</span>
+                        <span style={{ fontSize: 9, color: "#EF4444", fontWeight: 700 }}>خصم {fmtMoney(p.discount)}</span>
+                      </div>
+                    ) : (
+                      fmtMoney(p.amount)
+                    )}
+                  </td>
                   <td style={{ padding: "11px 14px", fontSize: 11, color: "#A78BFA", fontWeight: 600 }}>{p.coachName || "الإدارة"}</td>
                   <td style={{ padding: "11px 14px", fontSize: 11, color: t.textDim }}>{p.date}</td>
                   <td style={{ padding: "11px 14px", fontSize: 11, color: t.textDim }}>{p.note || "—"}</td>
@@ -3565,7 +3614,25 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`هل أنت متأكد من حذف هذه المعاملة الخاصة بـ ${p.playerName} بقيمة ${fmtMoney(p.amount)}؟`)) {
+                          setEditForm({ ...p });
+                          setEditModalPay(p);
+                        }}
+                        title="تعديل المعاملة"
+                        style={{
+                          padding: "6px 12px", borderRadius: 8, border: "1px solid #3B82F6",
+                          background: "rgba(59,130,246,0.10)", color: "#93C5FD",
+                          fontSize: 11, fontWeight: 700, cursor: "pointer",
+                          fontFamily: "'Cairo',sans-serif", display: "flex", alignItems: "center", gap: 5,
+                          transition: "all .15s", whiteSpace: "nowrap"
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(59,130,246,0.22)"; e.currentTarget.style.color = "#3B82F6"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(59,130,246,0.10)"; e.currentTarget.style.color = "#93C5FD"; }}
+                      >
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="edit" size={12} color="currentColor" /> تعديل</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`هل أنت متأكد من حذف هذه المعاملة الخاصة بـ ${p.playerName} بقيمة ${fmtMoney(p.amount - (p.discount || 0))}؟`)) {
                             setPayments(ps => ps.filter(x => x.id !== p.id));
                           }
                         }}
@@ -3591,7 +3658,7 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
         </table>
         <div style={{ padding: "12px 18px", borderTop: `1px solid ${t.border}`, display: "flex", justifyContent: "space-between", fontSize: 13 }}>
           <span style={{ color: t.textDim }}>{filtered.length} عملية</span>
-          <span style={{ fontWeight: 800, color: "#10B981" }}>الإجمالي: {fmtMoney(filtered.reduce((a, p) => a + p.amount, 0))}</span>
+          <span style={{ fontWeight: 800, color: "#10B981" }}>الإجمالي: {fmtMoney(filtered.reduce((a, p) => a + p.amount - (p.discount || 0), 0))}</span>
         </div>
       </Card>
       {modal && (
@@ -3614,17 +3681,42 @@ function AdminPayments({ payments, setPayments, players, coaches, parents, price
 
           <Input label="الشهر" value={form.month} onChange={v => setForm(f => ({ ...f, month: v }))} options={MONTHS} t={t}/>
           <Input label="التاريخ" value={form.date} onChange={v => setForm(f => ({ ...f, date: v }))} type="date" t={t}/>
+          <Input label="الخصم المالي (ر.س) - اختياري" value={form.discount || 0} onChange={v => setForm(f => ({ ...f, discount: +v }))} type="number" t={t}/>
           <Input label="ملاحظة" value={form.note} onChange={v => setForm(f => ({ ...f, note: v }))} placeholder="اختياري" t={t}/>
           
           <div style={{ background: t.bg, borderRadius: 12, padding: "14px", marginBottom: 18, border: `1px dashed ${t.border2}` }}>
-            <div style={{ fontSize: 11, color: t.textDim, marginBottom: 4 }}>إجمالي المبلغ المستحق:</div>
-            <div style={{ color: "#10B981", fontWeight: 900, fontSize: 20 }}>{fmtMoney(totalAmount)}</div>
+            <div style={{ fontSize: 11, color: t.textDim, marginBottom: 4 }}>إجمالي صافي المبلغ المدفوع:</div>
+            <div style={{ color: "#10B981", fontWeight: 900, fontSize: 20 }}>{fmtMoney(totalAmount - (form.discount || 0))}</div>
             <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 8 }}>
               {form.types.map(ty => <Chip key={ty} text={PAY_TYPES[ty]?.label} color={PAY_TYPES[ty]?.color} size={9}/>)}
             </div>
           </div>
           
           <div style={{ display: "flex", gap: 10 }}><Btn onClick={save} style={{ flex: 1 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="save" size={14} color="currentColor" /> تسجيل المدفوعات</span></Btn><Btn variant="secondary" onClick={() => setModal(false)}>إلغاء</Btn></div>
+        </Modal>
+      )}
+      {editModalPay && editForm && (
+        <Modal title="تعديل بيانات الدفعة" onClose={() => setEditModalPay(null)} t={t}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: t.textDim }}>اللاعب: <strong style={{ color: t.text }}>{editForm.playerName}</strong></div>
+            <div style={{ fontSize: 12, color: t.textDim }}>النوع: <strong style={{ color: t.text }}>{PAY_TYPES[editForm.type]?.label || editForm.type}</strong></div>
+          </div>
+          
+          <Input label="المبلغ الأساسي (ر.س)" value={editForm.amount} onChange={v => setEditForm(f => ({ ...f, amount: +v }))} type="number" t={t}/>
+          <Input label="الخصم المالي (ر.س)" value={editForm.discount || 0} onChange={v => setEditForm(f => ({ ...f, discount: +v }))} type="number" t={t}/>
+          <Input label="الشهر" value={editForm.month} onChange={v => setEditForm(f => ({ ...f, month: v }))} options={MONTHS} t={t}/>
+          <Input label="التاريخ" value={editForm.date} onChange={v => setEditForm(f => ({ ...f, date: v }))} type="date" t={t}/>
+          <Input label="ملاحظة" value={editForm.note} onChange={v => setEditForm(f => ({ ...f, note: v }))} placeholder="اختياري" t={t}/>
+          
+          <div style={{ background: t.bg, borderRadius: 12, padding: "14px", marginBottom: 18, border: `1px dashed ${t.border2}` }}>
+            <div style={{ fontSize: 11, color: t.textDim, marginBottom: 4 }}>إجمالي المبلغ المدفوع بعد الخصم:</div>
+            <div style={{ color: "#10B981", fontWeight: 900, fontSize: 20 }}>{fmtMoney(editForm.amount - (editForm.discount || 0))}</div>
+          </div>
+          
+          <div style={{ display: "flex", gap: 10 }}>
+            <Btn onClick={saveEdit} style={{ flex: 1 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><AnimIcon type="save" size={14} color="currentColor" /> حفظ التعديلات</span></Btn>
+            <Btn variant="secondary" onClick={() => setEditModalPay(null)}>إلغاء</Btn>
+          </div>
         </Modal>
       )}
       {invoicePay && (
@@ -3933,7 +4025,7 @@ function AdminReports({ players, coaches, groups, payments, attendance, evals, t
           const g = groups.find(x => x.id === p.groupId);
           const coach = coaches.find(c => c.groupId === p.groupId);
           const playerPayments = filterPayments().filter(pay => pay.playerId === p.id);
-          const totalPaid = playerPayments.reduce((sum, pay) => sum + pay.amount, 0);
+          const totalPaid = playerPayments.reduce((sum, pay) => sum + pay.amount - (pay.discount || 0), 0);
           const hasSub = playerPayments.some(pay => pay.type === "subscription");
           return {
             "الاسم": p.name,
@@ -3961,14 +4053,26 @@ function AdminReports({ players, coaches, groups, payments, attendance, evals, t
         const paymentsData = fPay.map(p => ({
           "اللاعب": p.playerName || "—",
           "النوع": PAY_TYPES[p.type]?.label || p.type,
-          "المبلغ": p.amount,
+          "المبلغ الأساسي": p.amount,
+          "الخصم": p.discount || 0,
+          "الصافي المدفوع": p.amount - (p.discount || 0),
           "الشهر": p.month,
           "التاريخ": p.date || "—",
           "المستلم": p.coachName || "الإدارة",
           "ملاحظة": p.note || "—",
         }));
         if (paymentsData.length > 0) {
-          const totalRow = { "اللاعب": "الإجمالي", "النوع": "", "المبلغ": fPay.reduce((s, p) => s + p.amount, 0), "الشهر": "", "التاريخ": "", "المستلم": "", "ملاحظة": "" };
+          const totalRow = {
+            "اللاعب": "الإجمالي",
+            "النوع": "",
+            "المبلغ الأساسي": fPay.reduce((s, p) => s + p.amount, 0),
+            "الخصم": fPay.reduce((s, p) => s + (p.discount || 0), 0),
+            "الصافي المدفوع": fPay.reduce((s, p) => s + p.amount - (p.discount || 0), 0),
+            "الشهر": "",
+            "التاريخ": "",
+            "المستلم": "",
+            "ملاحظة": ""
+          };
           paymentsData.push(totalRow);
         }
         const wsPayments = XLSX.utils.json_to_sheet(paymentsData);
@@ -4004,7 +4108,7 @@ function AdminReports({ players, coaches, groups, payments, attendance, evals, t
           const g = groups.find(x => x.id === c.groupId);
           const cPlayers = players.filter(p => p.groupId === c.groupId);
           const cPayments = filterPayments().filter(p => p.coachId === c.id);
-          const totalCollected = cPayments.reduce((s, p) => s + p.amount, 0);
+          const totalCollected = cPayments.reduce((s, p) => s + p.amount - (p.discount || 0), 0);
           return {
             "المدرب": c.name,
             "التخصص": c.specialty || "—",
@@ -4026,10 +4130,10 @@ function AdminReports({ players, coaches, groups, payments, attendance, evals, t
           return {
             "النوع": v.label,
             "عدد العمليات": typePayments.length,
-            "إجمالي المبلغ": typePayments.reduce((s, p) => s + p.amount, 0),
+            "إجمالي المبلغ": typePayments.reduce((s, p) => s + p.amount - (p.discount || 0), 0),
           };
         });
-        const totalRevenue = filterPayments().reduce((s, p) => s + p.amount, 0);
+        const totalRevenue = filterPayments().reduce((s, p) => s + p.amount - (p.discount || 0), 0);
         revenueByType.push({ "النوع": "الإجمالي الكلي", "عدد العمليات": filterPayments().length, "إجمالي المبلغ": totalRevenue });
         const wsRevenue = XLSX.utils.json_to_sheet(revenueByType);
         wsRevenue["!cols"] = [{ wch: 20 }, { wch: 14 }, { wch: 18 }];
@@ -4047,7 +4151,7 @@ function AdminReports({ players, coaches, groups, payments, attendance, evals, t
   };
 
   const fPay = filterPayments();
-  const totalRevenue = fPay.reduce((s, p) => s + p.amount, 0);
+  const totalRevenue = fPay.reduce((s, p) => s + p.amount - (p.discount || 0), 0);
   const subCount = fPay.filter(p => p.type === "subscription").length;
   const fAtt = filterAttendance();
 
@@ -4808,6 +4912,7 @@ function CoachPlayers({ myPlayers, group, evals, t, trainings, attendance, payme
             </div>
             {[
               ["العمر", `${p.age} سنة`], 
+              ["رقم الهوية", p.nationalId || "—"],
               ["الطول", `${p.height || '—'} سم`], 
               ["الوزن", `${p.weight || '—'} كجم`], 
               ["الأهداف", p.goals || 0], 
@@ -5115,11 +5220,11 @@ function CoachPayments({ coachId, myPlayers, payments, setPayments, prices, coac
   const [modal, setModal] = useState(false);
   const [form, setForm]   = useState({ playerId: myPlayers[0]?.id || "", type: "subscription", month: CUR_MONTH, note: "", date: getLocalDateString(new Date()) });
   const myPays = payments.filter(p => p.coachId === coachId);
-  const total  = myPays.reduce((a, p) => a + p.amount, 0);
+  const total  = myPays.reduce((a, p) => a + p.amount - (p.discount || 0), 0);
   const save   = () => {
     const player = myPlayers.find(p => p.id === form.playerId);
     const coach  = coaches.find(c => c.id === coachId);
-    setPayments(ps => [...ps, { ...form, id: `pay${Date.now()}`, coachId, coachName: coach?.name || "", playerName: player?.name || "", amount: prices[form.type] || 0 }]);
+    setPayments(ps => [...ps, { ...form, id: `pay${Date.now()}`, coachId, coachName: coach?.name || "", playerName: player?.name || "", amount: prices[form.type] || 0, discount: 0 }]);
     setModal(false);
   };
   return (
@@ -5145,7 +5250,16 @@ function CoachPayments({ coachId, myPlayers, payments, setPayments, prices, coac
                   <td style={{ padding: "10px 14px", fontSize: 12, fontWeight: 600, color: t.text }}>{p.playerName}</td>
                   <td style={{ padding: "10px 14px" }}><Chip text={<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><AnimIcon type={pt.icon} size={11} color={pt.color} />{pt.label}</span>} color={pt.color}/></td>
                   <td style={{ padding: "10px 14px", fontSize: 12, color: t.textDim }}>{p.month}</td>
-                  <td style={{ padding: "10px 14px", fontSize: 13, fontWeight: 800, color: pt.color }}>{fmtMoney(p.amount)}</td>
+                  <td style={{ padding: "10px 14px", fontSize: 13, fontWeight: 800, color: pt.color }}>
+                    {p.discount > 0 ? (
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span>{fmtMoney(p.amount - (p.discount || 0))}</span>
+                        <span style={{ fontSize: 9, color: "#EF4444", fontWeight: 700 }}>خصم {fmtMoney(p.discount)}</span>
+                      </div>
+                    ) : (
+                      fmtMoney(p.amount)
+                    )}
+                  </td>
                   <td style={{ padding: "10px 14px", fontSize: 11, color: t.textDim }}>{p.date}</td>
                   <td style={{ padding: "10px 14px", fontSize: 11, color: t.textDim }}>{p.note || "—"}</td>
                 </tr>
@@ -5241,7 +5355,7 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
   const evalCoach = lastEval ? (coaches || []).find(c => c.id === lastEval.coachId) : null;
   const evalCoachName = evalCoach ? evalCoach.name : (childCoach?.name || "طاقم التدريب");
   const monthPaid = childPays.some(p => p.type === "subscription" && p.month === CUR_MONTH);
-  const totalPaid = childPays.reduce((a, p) => a + p.amount, 0);
+  const totalPaid = childPays.reduce((a, p) => a + p.amount - (p.discount || 0), 0);
 
   const subDetails = getPlayerSubscriptionDetails(child, trainings, attendance, childPays);
   const totalPast = subDetails.attendedCount + subDetails.absentCount + subDetails.excusedCount;
@@ -5316,6 +5430,7 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
                   <Chip text={childGroup?.name || "بدون فريق"} color="#2563EB"/>
                   <Chip text={`مدرب: ${childCoach?.name || "طاقم التدريب"}`} color="#10B981"/>
                   <Chip text={child.status} color={child.status === "نشط" ? "#10B981" : "#EF4444"}/>
+                  {child.nationalId && <Chip text={`الهوية: ${child.nationalId}`} color="#6366F1" />}
                   {child.bus && <Chip text={`الباص: ${child.bus}`} color="#EC4899" />}
                 </div>
               </div>
@@ -5602,7 +5717,10 @@ function ParentOverview({ child, childGroup, childCoach, childPays, childEvals, 
                   border: `1px solid ${t.border}` 
                 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: t.textDim }}><AnimIcon type={pt.icon} size={13} color={pt.color} /> {pt.label}</span>
-                  <span style={{ fontWeight: 800, color: pt.color }}>{fmtMoney(p.amount)}</span>
+                  <div style={{ textAlign: "left", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                    <span style={{ fontWeight: 800, color: pt.color }}>{fmtMoney(p.amount - (p.discount || 0))}</span>
+                    {p.discount > 0 && <span style={{ fontSize: 8, color: "#EF4444", fontWeight: 700 }}>خصم {fmtMoney(p.discount)}</span>}
+                  </div>
                 </div>
               );
             })}
@@ -5717,10 +5835,10 @@ function ParentAttendance({ child, childAtt, childPays, t }) {
 }
 
 function ParentPayments({ child, childPays, prices, t }) {
-  const total     = childPays.reduce((a, p) => a + p.amount, 0);
+  const total     = childPays.reduce((a, p) => a + p.amount - (p.discount || 0), 0);
   const monthPaid = childPays.some(p => p.type === "subscription" && p.month === CUR_MONTH);
   const shouldHavePaid = isMonthAfterJoin(CUR_MONTH, child?.joinDate);
-  const byType    = Object.entries(PAY_TYPES).map(([k, v]) => ({ k, ...v, paid: childPays.filter(p => p.type === k).reduce((a, p) => a + p.amount, 0), count: childPays.filter(p => p.type === k).length }));
+  const byType    = Object.entries(PAY_TYPES).map(([k, v]) => ({ k, ...v, paid: childPays.filter(p => p.type === k).reduce((a, p) => a + p.amount - (p.discount || 0), 0), count: childPays.filter(p => p.type === k).length }));
 
   return (
     <div>
@@ -5758,7 +5876,16 @@ function ParentPayments({ child, childPays, prices, t }) {
                 <tr key={p.id} className={t.name === "dark" ? "rh" : "rhl"} style={{ borderBottom: `1px solid ${t.border}`, transition: "background .15s" }}>
                   <td style={{ padding: "10px 14px" }}><Chip text={<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><AnimIcon type={pt.icon} size={11} color={pt.color} />{pt.label}</span>} color={pt.color}/></td>
                   <td style={{ padding: "10px 14px", fontSize: 12, color: t.textDim }}>{p.month}</td>
-                  <td style={{ padding: "10px 14px", fontSize: 13, fontWeight: 800, color: pt.color }}>{fmtMoney(p.amount)}</td>
+                  <td style={{ padding: "10px 14px", fontSize: 13, fontWeight: 800, color: pt.color }}>
+                    {p.discount > 0 ? (
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span>{fmtMoney(p.amount - (p.discount || 0))}</span>
+                        <span style={{ fontSize: 9, color: "#EF4444", fontWeight: 700 }}>خصم {fmtMoney(p.discount)}</span>
+                      </div>
+                    ) : (
+                      fmtMoney(p.amount)
+                    )}
+                  </td>
                   <td style={{ padding: "10px 14px", fontSize: 11, color: "#A78BFA", fontWeight: 600 }}>{p.coachName}</td>
                   <td style={{ padding: "10px 14px", fontSize: 11, color: t.textDim }}>{p.date}</td>
                   <td style={{ padding: "10px 14px", fontSize: 11, color: t.textDim }}>{p.note || "—"}</td>
