@@ -665,6 +665,28 @@ app.delete('/api/messages/:id', async (req, res) => {
   }
 });
 
+app.post('/api/fix-more-attendance-2', async (req, res) => {
+  try {
+    const att = await prisma.attendance.findUnique({
+      where: { id: 'att1782854963554' }
+    });
+    let updated = null;
+    if (att && att.records) {
+      const records = { ...att.records };
+      records['p1782596724003'] = 'حاضر'; // عبدالعزيز بن عيبان
+      records['p1782683269433'] = 'حاضر'; // علي ابراهيم ال فرحان
+      updated = await prisma.attendance.update({
+        where: { id: 'att1782854963554' },
+        data: { records }
+      });
+    }
+    res.json({ success: true, updated });
+  } catch (e) {
+    console.error("Error fixing attendance:", e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
