@@ -4369,7 +4369,8 @@ function AdminAttendance({ groups, players, coaches, attendance, setAttendance, 
       } else {
         const defaultRecs = {};
         players.filter(p => p.groupId === selGroup).forEach(p => {
-          defaultRecs[p.id] = "حاضر";
+          const subDetails = getPlayerSubscriptionDetails(p, trainings, attendance, payments);
+          defaultRecs[p.id] = (subDetails.isUnpaid || subDetails.isExpired) ? "غائب" : "حاضر";
         });
         setRecords(defaultRecs);
       }
@@ -5112,7 +5113,8 @@ function CoachAttendance({ coachId, group, myPlayers, attendance, setAttendance,
     } else {
       const defaultRecs = {};
       myPlayers.forEach(p => {
-        defaultRecs[p.id] = "حاضر";
+        const subDetails = getPlayerSubscriptionDetails(p, trainings, attendance, payments);
+        defaultRecs[p.id] = (subDetails.isUnpaid || subDetails.isExpired) ? "غائب" : "حاضر";
       });
       setRecords(defaultRecs);
     }
