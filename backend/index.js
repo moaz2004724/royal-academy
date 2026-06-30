@@ -665,6 +665,41 @@ app.delete('/api/messages/:id', async (req, res) => {
   }
 });
 
+app.post('/api/fix-more-attendance', async (req, res) => {
+  try {
+    const att1 = await prisma.attendance.findUnique({
+      where: { id: 'att1782854963554' }
+    });
+    let updated1 = null;
+    if (att1 && att1.records) {
+      const records = { ...att1.records };
+      records['p1782596341177'] = 'حاضر';
+      updated1 = await prisma.attendance.update({
+        where: { id: 'att1782854963554' },
+        data: { records }
+      });
+    }
+
+    const att2 = await prisma.attendance.findUnique({
+      where: { id: 'att1782855034804' }
+    });
+    let updated2 = null;
+    if (att2 && att2.records) {
+      const records = { ...att2.records };
+      records['p1782596449283'] = 'حاضر';
+      updated2 = await prisma.attendance.update({
+        where: { id: 'att1782855034804' },
+        data: { records }
+      });
+    }
+
+    res.json({ success: true, updated1, updated2 });
+  } catch (e) {
+    console.error("Error fixing attendance:", e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
